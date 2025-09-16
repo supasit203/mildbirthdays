@@ -181,6 +181,31 @@ body {
   z-index: 0;
 }
 
+.shooting-layer {
+  position: fixed;
+  inset: 0;
+  z-index: 1;
+  pointer-events: none;
+  overflow: hidden;
+}
+
+.shooting-star {
+  position: absolute;
+  width: 2px;
+  height: 2px;
+  background: linear-gradient(90deg, rgba(255,255,255,1), rgba(255,255,255,0));
+  border-radius: 50%;
+  box-shadow: 0 0 8px rgba(255,255,255,0.9);
+  transform: rotate(45deg);
+  animation: shoot var(--duration) linear forwards;
+}
+
+@keyframes shoot {
+  0% { opacity: 0; transform: translate(0, 0) rotate(45deg); }
+  10% { opacity: 1; }
+  100% { opacity: 0; transform: translate(var(--dx), var(--dy)) rotate(45deg); }
+}
+
 .solar {
   position: relative;
   width: 100%;

@@ -21,19 +21,19 @@ for (let i = 0; i < heartCount; i++) {
 const scenes = [
   {
     type: "quote",
-    quote: "วันแรกที่เจอ... คุณยิ้มให้ฉันเหมือนกับว่าเราเคยรู้จักกันนานแล้ว"
+    quote: "คืนนี้… ฉันอยากพาเธอไปดูจักรวาลของฉัน"
   },
   {
     type: "quote",
-    quote: "ตอนที่เราอดข้าว แต่กินไอศกรีมด้วยกัน... คุณบอกว่า ‘ความสุขไม่ต้องแพง’"
+    quote: "ตรงกลางจักรวาลนี้คือดวงอาทิตย์… เหมือนหัวใจฉันที่มีเธออยู่ตรงกลาง"
   },
   {
     type: "quote",
-    quote: "วันที่คุณร้องไห้เพราะฉันลืมวันเกิด... แต่คุณก็ยังกอดฉันไว้"
+    quote: "บางวันเราอาจไม่สมบูรณ์แบบ แต่เราพอดีสำหรับกันและกันเสมอ"
   },
   {
     type: "quote",
-    quote: "ตอนฝนตก... เราเดินด้วยกันโดยไม่พูดอะไรเลย แต่ฉันรู้ว่าเราไม่ต้องพูด"
+    quote: "ขอบคุณที่เป็นแสงสว่างให้ทุกวันของฉัน"
   },
   {
     type: "final",
@@ -52,12 +52,12 @@ function showScene(index) {
   if (scene.type === "quote") {
     const quote = document.createElement('p');
     quote.className = 'quote';
-    quote.textContent = scene.quote;
-
     sceneContainer.appendChild(quote);
 
-    setTimeout(() => quote.style.opacity = '1', 200);
-    setTimeout(() => quote.style.transform = 'translateY(0)', 200);
+    typeText(quote, scene.quote, 24).then(() => {
+      quote.style.opacity = '1';
+      quote.style.transform = 'translateY(0)';
+    });
 
   } else if (scene.type === "final") {
     sceneContainer.innerHTML = '';
@@ -87,9 +87,8 @@ function showScene(index) {
   }
 
   if (index < scenes.length - 1) {
-    setTimeout(() => {
-      showScene(index + 1);
-    }, scene.duration || 5000);
+    const baseDelay = scene.type === 'quote' ? Math.max(4000, scenes[index].quote.length * 45) : 5000;
+    setTimeout(() => showScene(index + 1), baseDelay);
   }
 }
 
@@ -108,6 +107,50 @@ function playFinalAudio() {
   audio.volume = 0.5;
   audio.play().catch(e => console.log("User interaction required"));
 }
+
+function typeText(element, text, speed = 30) {
+  return new Promise(resolve => {
+    element.innerHTML = '';
+    const chars = Array.from(text);
+    let i = 0;
+    const tick = () => {
+      if (i < chars.length) {
+        const ch = chars[i];
+        element.innerHTML += ch === '\n' ? '<br>' : ch;
+        i++;
+        setTimeout(tick, ch === ' ' ? speed / 2 : speed);
+      } else {
+        resolve();
+      }
+    };
+    tick();
+  });
+}
+
+// Shooting stars
+const shootingLayer = document.getElementById('shooting');
+function spawnShootingStar() {
+  if (!shootingLayer) return;
+  const star = document.createElement('div');
+  star.className = 'shooting-star';
+  const startX = Math.random() * window.innerWidth * 0.8;
+  const startY = Math.random() * window.innerHeight * 0.4;
+  const dx = 300 + Math.random() * 400;
+  const dy = 180 + Math.random() * 280;
+  const dur = 1.2 + Math.random() * 0.8;
+  star.style.left = `${startX}px`;
+  star.style.top = `${startY}px`;
+  star.style.setProperty('--dx', `${dx}px`);
+  star.style.setProperty('--dy', `${dy}px`);
+  star.style.setProperty('--duration', `${dur}s`);
+  shootingLayer.appendChild(star);
+  setTimeout(() => star.remove(), dur * 1000 + 200);
+}
+
+setInterval(() => {
+  if (document.hidden) return;
+  if (Math.random() < 0.7) spawnShootingStar();
+}, 3500);
 
 function renderCosmos() {
   const cosmosRoot = document.getElementById('cosmos');
