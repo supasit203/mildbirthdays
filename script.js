@@ -20,12 +20,6 @@ for (let i = 0; i < heartCount; i++) {
 
 const scenes = [
   {
-    type: "solar",
-    title: "Happy Birthday, My Universe",
-    subtitle: "เธอคือดวงอาทิตย์ของใจฉัน",
-    duration: 6000
-  },
-  {
     type: "image",
     src: "assets/images/1.jpg",
     quote: "วันแรกที่เจอ... คุณยิ้มให้ฉันเหมือนกับว่าเราเคยรู้จักกันนานแล้ว"
@@ -60,9 +54,7 @@ function showScene(index) {
   sceneContainer.innerHTML = '';
   sceneContainer.className = 'scene';
 
-  if (scene.type === "solar") {
-    renderSolarScene(scene);
-  } else if (scene.type === "image") {
+  if (scene.type === "image") {
     const img = new Image();
     img.src = scene.src;
     img.alt = "Memory";
@@ -132,7 +124,11 @@ function playFinalAudio() {
   audio.play().catch(e => console.log("User interaction required"));
 }
 
-function renderSolarScene(scene) {
+function renderCosmos() {
+  const cosmosRoot = document.getElementById('cosmos');
+  if (!cosmosRoot) return;
+  cosmosRoot.innerHTML = '';
+
   const solar = document.createElement('div');
   solar.className = 'solar';
 
@@ -204,17 +200,11 @@ function renderSolarScene(scene) {
   // Neptune
   solar.appendChild(makeOrbit(620, 44, 16, 'linear-gradient(135deg, #8bb5ff, #507ddb)'));
 
-  const title = document.createElement('div');
-  title.className = 'solar-title';
-  title.textContent = scene.title;
-  const subtitle = document.createElement('div');
-  subtitle.className = 'solar-subtitle';
-  subtitle.textContent = scene.subtitle;
-
-  sceneContainer.appendChild(solar);
-  sceneContainer.appendChild(title);
-  sceneContainer.appendChild(subtitle);
+  cosmosRoot.appendChild(solar);
 }
+
+// Render cosmos background immediately
+renderCosmos();
 
 document.addEventListener('click', () => {
   if (!window.hasInteracted) {
