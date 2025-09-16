@@ -54,11 +54,15 @@ function showScene(index) {
     quote.className = 'quote';
     sceneContainer.appendChild(quote);
 
-    typeText(quote, scene.quote, 24).then(() => {
+    typeText(quote, scene.quote, 65).then(() => {
       quote.style.opacity = '1';
       quote.style.transform = 'translateY(0)';
+      const dwell = 2500; // extra time to read after typing finishes
+      if (index < scenes.length - 1) {
+        setTimeout(() => showScene(index + 1), dwell);
+      }
     });
-
+    return;
   } else if (scene.type === "final") {
     sceneContainer.innerHTML = '';
     sceneContainer.classList.add('final-screen');
@@ -86,8 +90,8 @@ function showScene(index) {
     playBackgroundMusic();
   }
 
-  if (index < scenes.length - 1) {
-    const baseDelay = scene.type === 'quote' ? Math.max(4000, scenes[index].quote.length * 45) : 5000;
+  if (index < scenes.length - 1 && scene.type !== 'quote') {
+    const baseDelay = 6000;
     setTimeout(() => showScene(index + 1), baseDelay);
   }
 }
@@ -108,7 +112,7 @@ function playFinalAudio() {
   audio.play().catch(e => console.log("User interaction required"));
 }
 
-function typeText(element, text, speed = 30) {
+function typeText(element, text, speed = 60) {
   return new Promise(resolve => {
     element.innerHTML = '';
     const chars = Array.from(text);
@@ -118,7 +122,8 @@ function typeText(element, text, speed = 30) {
         const ch = chars[i];
         element.innerHTML += ch === '\n' ? '<br>' : ch;
         i++;
-        setTimeout(tick, ch === ' ' ? speed / 2 : speed);
+        const delay = ch === ' ' ? speed * 0.6 : speed;
+        setTimeout(tick, delay);
       } else {
         resolve();
       }
@@ -156,6 +161,11 @@ function renderCosmos() {
   const cosmosRoot = document.getElementById('cosmos');
   if (!cosmosRoot) return;
   cosmosRoot.innerHTML = '';
+
+  // Nebula layer
+  const nebula = document.createElement('div');
+  nebula.className = 'nebula';
+  cosmosRoot.appendChild(nebula);
 
   const solar = document.createElement('div');
   solar.className = 'solar';
@@ -229,6 +239,29 @@ function renderCosmos() {
   solar.appendChild(makeOrbit(620, 44, 16, 'linear-gradient(135deg, #8bb5ff, #507ddb)'));
 
   cosmosRoot.appendChild(solar);
+
+  // Spaceships
+  spawnShip(cosmosRoot, false, 45, 0);
+  spawnShip(cosmosRoot, true, 52, 8);
+}
+
+function spawnShip(root, reverse = false, durationSec = 48, delaySec = 0) {
+  const ship = document.createElement('div');
+  ship.className = reverse ? 'ship reverse' : 'ship';
+  ship.style.setProperty('--duration', `${durationSec}s`);
+  ship.style.setProperty('--delay', `${delaySec}s`);
+  ship.style.top = `${15 + Math.random() * 55}%`;
+  const body = document.createElement('div');
+  body.className = 'ship-body';
+  ship.appendChild(body);
+  root.appendChild(ship);
+
+  // recycle after one pass
+  setTimeout(() => {
+    ship.remove();
+    // respawn with new random top and delay
+    spawnShip(root, reverse, durationSec, Math.random() * 10);
+  }, (durationSec + delaySec) * 1000);
 }
 
 // Render cosmos background immediately
