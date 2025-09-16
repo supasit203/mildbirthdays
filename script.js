@@ -140,7 +140,7 @@ function renderSolarScene(scene) {
   sun.className = 'sun';
   solar.appendChild(sun);
 
-  const makeOrbit = (diameter, speed, size, gradient) => {
+  const makeOrbit = (diameter, speed, size, gradient, extrasCb) => {
     const orbit = document.createElement('div');
     orbit.className = 'orbit';
     orbit.style.width = `${diameter}px`;
@@ -159,13 +159,50 @@ function renderSolarScene(scene) {
     body.style.setProperty('--gradient', gradient);
 
     planet.appendChild(body);
+
+    if (typeof extrasCb === 'function') {
+      extrasCb(planet, body, orbit);
+    }
     orbit.appendChild(planet);
     return orbit;
   };
 
-  solar.appendChild(makeOrbit(180, 10, 12, 'linear-gradient(135deg, #9ad6ff, #6bb1ff)'));
-  solar.appendChild(makeOrbit(260, 16, 18, 'linear-gradient(135deg, #ffd1a3, #ff9c6b)'));
-  solar.appendChild(makeOrbit(340, 22, 14, 'linear-gradient(135deg, #dab6ff, #b58cff)'));
+  // Mercury
+  solar.appendChild(makeOrbit(160, 8, 8, 'linear-gradient(135deg, #c9c9c9, #9e9e9e)'));
+  // Venus
+  solar.appendChild(makeOrbit(210, 12, 12, 'linear-gradient(135deg, #ffd399, #e8a86f)'));
+  // Earth + Moon
+  solar.appendChild(makeOrbit(260, 16, 13, 'linear-gradient(135deg, #6bb1ff, #2e86de)', (planet, body) => {
+    const moonOrbit = document.createElement('div');
+    moonOrbit.className = 'moon-orbit';
+    moonOrbit.style.width = '36px';
+    moonOrbit.style.height = '36px';
+    moonOrbit.style.setProperty('--speed', '4s');
+
+    const moon = document.createElement('div');
+    moon.className = 'moon';
+    moon.style.setProperty('--size', '4px');
+
+    moonOrbit.appendChild(moon);
+    planet.appendChild(moonOrbit);
+  }));
+  // Mars
+  solar.appendChild(makeOrbit(310, 20, 10, 'linear-gradient(135deg, #ff9f6b, #d86a3e)'));
+  // Jupiter
+  solar.appendChild(makeOrbit(380, 26, 22, 'linear-gradient(135deg, #f5d7a1, #d1a46e)'));
+  // Saturn + ring
+  solar.appendChild(makeOrbit(460, 32, 20, 'linear-gradient(135deg, #f3e3b3, #cbb07a)', (planet, body) => {
+    const ring = document.createElement('div');
+    ring.className = 'ring';
+    ring.style.width = '46px';
+    ring.style.height = '46px';
+    planet.style.zIndex = '1';
+    planet.appendChild(ring);
+  }));
+  // Uranus
+  solar.appendChild(makeOrbit(540, 38, 16, 'linear-gradient(135deg, #a7e3e8, #86cbd1)'));
+  // Neptune
+  solar.appendChild(makeOrbit(620, 44, 16, 'linear-gradient(135deg, #8bb5ff, #507ddb)'));
 
   const title = document.createElement('div');
   title.className = 'solar-title';
