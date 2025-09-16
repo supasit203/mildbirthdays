@@ -20,28 +20,23 @@ for (let i = 0; i < heartCount; i++) {
 
 const scenes = [
   {
-    type: "image",
-    src: "assets/images/1.jpg",
+    type: "quote",
     quote: "วันแรกที่เจอ... คุณยิ้มให้ฉันเหมือนกับว่าเราเคยรู้จักกันนานแล้ว"
   },
   {
-    type: "image",
-    src: "assets/images/2.jpg",
+    type: "quote",
     quote: "ตอนที่เราอดข้าว แต่กินไอศกรีมด้วยกัน... คุณบอกว่า ‘ความสุขไม่ต้องแพง’"
   },
   {
-    type: "image",
-    src: "assets/images/3.jpg",
+    type: "quote",
     quote: "วันที่คุณร้องไห้เพราะฉันลืมวันเกิด... แต่คุณก็ยังกอดฉันไว้"
   },
   {
-    type: "image",
-    src: "assets/images/4.jpg",
+    type: "quote",
     quote: "ตอนฝนตก... เราเดินด้วยกันโดยไม่พูดอะไรเลย แต่ฉันรู้ว่าเราไม่ต้องพูด"
   },
   {
     type: "final",
-    bg: "assets/images/final-bg.jpg",
     quote: "ฉันไม่เคยคิดว่าตัวเองจะรักใครขนาดนี้...\n\nจนมาเจอเธอ\n\nวันนี้... ฉันขอเธอเป็นคนเดียวของฉัน\ntill the end of my breath."
   }
 ];
@@ -54,29 +49,19 @@ function showScene(index) {
   sceneContainer.innerHTML = '';
   sceneContainer.className = 'scene';
 
-  if (scene.type === "image") {
-    const img = new Image();
-    img.src = scene.src;
-    img.alt = "Memory";
-    img.classList.add('image');
-
+  if (scene.type === "quote") {
     const quote = document.createElement('p');
     quote.className = 'quote';
     quote.textContent = scene.quote;
 
-    sceneContainer.appendChild(img);
     sceneContainer.appendChild(quote);
 
-    setTimeout(() => img.style.opacity = '1', 100);
-    setTimeout(() => img.style.transform = 'translateY(0)', 100);
-    setTimeout(() => quote.style.opacity = '1', 800);
-    setTimeout(() => quote.style.transform = 'translateY(0)', 800);
+    setTimeout(() => quote.style.opacity = '1', 200);
+    setTimeout(() => quote.style.transform = 'translateY(0)', 200);
 
   } else if (scene.type === "final") {
-    document.body.style.background = 'none';
     sceneContainer.innerHTML = '';
     sceneContainer.classList.add('final-screen');
-    sceneContainer.style.backgroundImage = `url(${scene.bg})`;
 
     const h1 = document.createElement('h1');
     h1.textContent = "ฉันรักเธอ";
