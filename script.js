@@ -20,6 +20,12 @@ for (let i = 0; i < heartCount; i++) {
 
 const scenes = [
   {
+    type: "solar",
+    title: "Happy Birthday, My Universe",
+    subtitle: "เธอคือดวงอาทิตย์ของใจฉัน",
+    duration: 6000
+  },
+  {
     type: "image",
     src: "assets/images/1.jpg",
     quote: "วันแรกที่เจอ... คุณยิ้มให้ฉันเหมือนกับว่าเราเคยรู้จักกันนานแล้ว"
@@ -52,8 +58,11 @@ let currentIndex = 0;
 function showScene(index) {
   const scene = scenes[index];
   sceneContainer.innerHTML = '';
+  sceneContainer.className = 'scene';
 
-  if (scene.type === "image") {
+  if (scene.type === "solar") {
+    renderSolarScene(scene);
+  } else if (scene.type === "image") {
     const img = new Image();
     img.src = scene.src;
     img.alt = "Memory";
@@ -103,7 +112,7 @@ function showScene(index) {
   if (index < scenes.length - 1) {
     setTimeout(() => {
       showScene(index + 1);
-    }, 5000);
+    }, scene.duration || 5000);
   }
 }
 
@@ -121,6 +130,53 @@ function playFinalAudio() {
   const audio = new Audio('assets/audio/voice-message.mp3');
   audio.volume = 0.5;
   audio.play().catch(e => console.log("User interaction required"));
+}
+
+function renderSolarScene(scene) {
+  const solar = document.createElement('div');
+  solar.className = 'solar';
+
+  const sun = document.createElement('div');
+  sun.className = 'sun';
+  solar.appendChild(sun);
+
+  const makeOrbit = (diameter, speed, size, gradient) => {
+    const orbit = document.createElement('div');
+    orbit.className = 'orbit';
+    orbit.style.width = `${diameter}px`;
+    orbit.style.height = `${diameter}px`;
+    orbit.style.setProperty('--speed', `${speed}s`);
+    orbit.style.borderRadius = '50%';
+    orbit.style.pointerEvents = 'none';
+
+    const planet = document.createElement('div');
+    planet.className = 'planet';
+    planet.style.transform = 'translate(-50%, -50%)';
+
+    const body = document.createElement('div');
+    body.className = 'body';
+    body.style.setProperty('--size', `${size}px`);
+    body.style.setProperty('--gradient', gradient);
+
+    planet.appendChild(body);
+    orbit.appendChild(planet);
+    return orbit;
+  };
+
+  solar.appendChild(makeOrbit(180, 10, 12, 'linear-gradient(135deg, #9ad6ff, #6bb1ff)'));
+  solar.appendChild(makeOrbit(260, 16, 18, 'linear-gradient(135deg, #ffd1a3, #ff9c6b)'));
+  solar.appendChild(makeOrbit(340, 22, 14, 'linear-gradient(135deg, #dab6ff, #b58cff)'));
+
+  const title = document.createElement('div');
+  title.className = 'solar-title';
+  title.textContent = scene.title;
+  const subtitle = document.createElement('div');
+  subtitle.className = 'solar-subtitle';
+  subtitle.textContent = scene.subtitle;
+
+  sceneContainer.appendChild(solar);
+  sceneContainer.appendChild(title);
+  sceneContainer.appendChild(subtitle);
 }
 
 document.addEventListener('click', () => {
