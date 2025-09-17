@@ -167,6 +167,11 @@ function renderCosmos() {
   nebula.className = 'nebula';
   cosmosRoot.appendChild(nebula);
 
+  // Milky Way band
+  const milky = document.createElement('div');
+  milky.className = 'milkyway';
+  cosmosRoot.appendChild(milky);
+
   const solar = document.createElement('div');
   solar.className = 'solar';
 
@@ -243,6 +248,12 @@ function renderCosmos() {
   // Spaceships
   spawnShip(cosmosRoot, false, 45, 0);
   spawnShip(cosmosRoot, true, 52, 8);
+
+  // Black hole
+  const bh = document.createElement('div');
+  bh.className = 'blackhole';
+  bh.innerHTML = '<div class="disk"></div><div class="glow"></div><div class="horizon"></div>';
+  cosmosRoot.appendChild(bh);
 }
 
 function spawnShip(root, reverse = false, durationSec = 48, delaySec = 0) {
@@ -251,8 +262,15 @@ function spawnShip(root, reverse = false, durationSec = 48, delaySec = 0) {
   ship.style.setProperty('--duration', `${durationSec}s`);
   ship.style.setProperty('--delay', `${delaySec}s`);
   ship.style.top = `${15 + Math.random() * 55}%`;
+  ship.style.setProperty('--scale', `${0.9 + Math.random() * 0.5}`);
   const body = document.createElement('div');
   body.className = 'ship-body';
+  const flame = document.createElement('div');
+  flame.className = 'ship-flame';
+  const trail = document.createElement('div');
+  trail.className = 'trail';
+  ship.appendChild(trail);
+  ship.appendChild(flame);
   ship.appendChild(body);
   root.appendChild(ship);
 
