@@ -249,11 +249,7 @@ function renderCosmos() {
   spawnShip(cosmosRoot, false, 45, 0);
   spawnShip(cosmosRoot, true, 52, 8);
 
-  // Black hole
-  const bh = document.createElement('div');
-  bh.className = 'blackhole';
-  bh.innerHTML = '<div class="disk"></div><div class="glow"></div><div class="horizon"></div>';
-  cosmosRoot.appendChild(bh);
+  // Interactive Black hole will be created separately
 }
 
 function spawnShip(root, reverse = false, durationSec = 48, delaySec = 0) {
@@ -285,6 +281,168 @@ function spawnShip(root, reverse = false, durationSec = 48, delaySec = 0) {
 
 // Render cosmos background immediately
 renderCosmos();
+
+// Interactive Black Hole
+function createInteractiveBlackHole() {
+  const container = document.getElementById('blackhole-container');
+  if (!container) return;
+
+  const blackhole = document.createElement('div');
+  blackhole.className = 'blackhole-interactive';
+  
+  const canvas = document.createElement('canvas');
+  canvas.className = 'blackhole-canvas';
+  canvas.width = 300;
+  canvas.height = 300;
+  
+  const center = document.createElement('div');
+  center.className = 'blackhole-center';
+  center.innerHTML = '<span>ENTER</span>';
+  
+  blackhole.appendChild(canvas);
+  blackhole.appendChild(center);
+  container.appendChild(blackhole);
+
+  // Black hole animation
+  const ctx = canvas.getContext('2d');
+  const maxOrbit = 127;
+  const centerX = 150;
+  const centerY = 150;
+  let stars = [];
+  let collapse = false;
+  let expanse = false;
+  let startTime = Date.now();
+
+  function setDPI(canvas, dpi) {
+    const scaleFactor = dpi / 96;
+    canvas.width = Math.ceil(canvas.width * scaleFactor);
+    canvas.height = Math.ceil(canvas.height * scaleFactor);
+    const ctx = canvas.getContext('2d');
+    ctx.scale(scaleFactor, scaleFactor);
+  }
+
+  function rotate(cx, cy, x, y, angle) {
+    const cos = Math.cos(angle);
+    const sin = Math.sin(angle);
+    const nx = (cos * (x - cx)) + (sin * (y - cy)) + cx;
+    const ny = (cos * (y - cy)) - (sin * (x - cx)) + cy;
+    return [nx, ny];
+  }
+
+  setDPI(canvas, 192);
+
+  function Star() {
+    const rands = [];
+    rands.push(Math.random() * (maxOrbit/2) + 1);
+    rands.push(Math.random() * (maxOrbit/2) + maxOrbit);
+    
+    this.orbital = (rands.reduce((p, c) => p + c, 0) / rands.length);
+    this.x = centerX;
+    this.y = centerY + this.orbital;
+    this.yOrigin = centerY + this.orbital;
+    this.speed = (Math.floor(Math.random() * 2.5) + 1.5) * Math.PI / 180;
+    this.rotation = 0;
+    this.startRotation = (Math.floor(Math.random() * 360) + 1) * Math.PI / 180;
+    this.id = stars.length;
+    this.collapseBonus = this.orbital - (maxOrbit * 0.7);
+    if (this.collapseBonus < 0) this.collapseBonus = 0;
+    
+    stars.push(this);
+    this.color = `rgba(255,255,255,${1 - (this.orbital / 255)})`;
+    this.hoverPos = centerY + (maxOrbit/2) + this.collapseBonus;
+    this.expansePos = centerY + (this.id % 100) * -10 + (Math.floor(Math.random() * 20) + 1);
+    this.prevR = this.startRotation;
+    this.prevX = this.x;
+    this.prevY = this.y;
+  }
+
+  Star.prototype.draw = function() {
+    if (!expanse) {
+      this.rotation = this.startRotation + ((Date.now() - startTime) / 50) * this.speed;
+      if (!collapse) {
+        if (this.y > this.yOrigin) this.y -= 2.5;
+        if (this.y < this.yOrigin - 4) this.y += (this.yOrigin - this.y) / 10;
+      } else {
+        if (this.y > this.hoverPos) this.y -= (this.hoverPos - this.y) / -5;
+        if (this.y < this.hoverPos - 4) this.y += 2.5;
+      }
+    } else {
+      this.rotation = this.startRotation + ((Date.now() - startTime) / 50) * (this.speed / 2);
+      if (this.y > this.expansePos) this.y -= Math.floor(this.expansePos - this.y) / -140;
+    }
+
+    ctx.save();
+    ctx.fillStyle = this.color;
+    ctx.strokeStyle = this.color;
+    ctx.beginPath();
+    const oldPos = rotate(centerX, centerY, this.prevX, this.prevY, -this.prevR);
+    ctx.moveTo(oldPos[0], oldPos[1]);
+    ctx.translate(centerX, centerY);
+    ctx.rotate(this.rotation);
+    ctx.translate(-centerX, -centerY);
+    ctx.lineTo(this.x, this.y);
+    ctx.stroke();
+    ctx.restore();
+
+    this.prevR = this.rotation;
+    this.prevX = this.x;
+    this.prevY = this.y;
+  };
+
+  function loop() {
+    ctx.fillStyle = 'rgba(25,25,25,0.2)';
+    ctx.fillRect(0, 0, 300, 300);
+
+    for (let i = 0; i < stars.length; i++) {
+      if (stars[i] !== stars) {
+        stars[i].draw();
+      }
+    }
+
+    requestAnimationFrame(loop);
+  }
+
+  function init() {
+    ctx.fillStyle = 'rgba(25,25,25,1)';
+    ctx.fillRect(0, 0, 300, 300);
+    for (let i = 0; i < 1500; i++) {
+      new Star();
+    }
+    loop();
+  }
+
+  // Event listeners
+  center.addEventListener('click', function() {
+    collapse = false;
+    expanse = true;
+    center.classList.add('open');
+    
+    // Show final scene after black hole expansion
+    setTimeout(() => {
+      if (currentIndex < scenes.length - 1) {
+        showScene(scenes.length - 1); // Go to final scene
+      }
+    }, 1000);
+  });
+
+  center.addEventListener('mouseover', function() {
+    if (!expanse) collapse = true;
+  });
+
+  center.addEventListener('mouseout', function() {
+    if (!expanse) collapse = false;
+  });
+
+  // Show black hole center after a delay
+  setTimeout(() => {
+    center.classList.add('show');
+  }, 2000);
+
+  init();
+}
+
+// Create interactive black hole
+createInteractiveBlackHole();
 
 document.addEventListener('click', () => {
   if (!window.hasInteracted) {
