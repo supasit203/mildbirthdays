@@ -282,7 +282,7 @@ function spawnShip(root, reverse = false, durationSec = 48, delaySec = 0) {
 // Render cosmos background immediately
 renderCosmos();
 
-// Interactive Black Hole
+// Interactive Black Hole - Full Screen Background
 function createInteractiveBlackHole() {
   const container = document.getElementById('blackhole-container');
   if (!container) return;
@@ -292,8 +292,8 @@ function createInteractiveBlackHole() {
   
   const canvas = document.createElement('canvas');
   canvas.className = 'blackhole-canvas';
-  canvas.width = 300;
-  canvas.height = 300;
+  canvas.width = window.innerWidth;
+  canvas.height = window.innerHeight;
   
   const center = document.createElement('div');
   center.className = 'blackhole-center';
@@ -305,9 +305,9 @@ function createInteractiveBlackHole() {
 
   // Black hole animation
   const ctx = canvas.getContext('2d');
-  const maxOrbit = 127;
-  const centerX = 150;
-  const centerY = 150;
+  const maxOrbit = Math.min(window.innerWidth, window.innerHeight) * 0.3;
+  const centerX = window.innerWidth / 2;
+  const centerY = window.innerHeight / 2;
   let stars = [];
   let collapse = false;
   let expanse = false;
@@ -390,8 +390,8 @@ function createInteractiveBlackHole() {
   };
 
   function loop() {
-    ctx.fillStyle = 'rgba(25,25,25,0.2)';
-    ctx.fillRect(0, 0, 300, 300);
+    ctx.fillStyle = 'rgba(0,0,0,0.2)';
+    ctx.fillRect(0, 0, canvas.width, canvas.height);
 
     for (let i = 0; i < stars.length; i++) {
       if (stars[i] !== stars) {
@@ -403,9 +403,9 @@ function createInteractiveBlackHole() {
   }
 
   function init() {
-    ctx.fillStyle = 'rgba(25,25,25,1)';
-    ctx.fillRect(0, 0, 300, 300);
-    for (let i = 0; i < 1500; i++) {
+    ctx.fillStyle = 'rgba(0,0,0,1)';
+    ctx.fillRect(0, 0, canvas.width, canvas.height);
+    for (let i = 0; i < 2000; i++) {
       new Star();
     }
     loop();
@@ -417,10 +417,13 @@ function createInteractiveBlackHole() {
     expanse = true;
     center.classList.add('open');
     
-    // Show final scene after black hole expansion
+    // Hide black hole background and reveal solar system
     setTimeout(() => {
-      if (currentIndex < scenes.length - 1) {
-        showScene(scenes.length - 1); // Go to final scene
+      container.classList.add('hidden');
+      // Start the slideshow
+      if (!window.hasInteracted) {
+        window.hasInteracted = true;
+        showScene(0);
       }
     }, 1000);
   });
@@ -436,7 +439,7 @@ function createInteractiveBlackHole() {
   // Show black hole center after a delay
   setTimeout(() => {
     center.classList.add('show');
-  }, 2000);
+  }, 1000);
 
   init();
 }
@@ -444,16 +447,17 @@ function createInteractiveBlackHole() {
 // Create interactive black hole
 createInteractiveBlackHole();
 
-document.addEventListener('click', () => {
-  if (!window.hasInteracted) {
-    window.hasInteracted = true;
-    showScene(0);
-  }
-});
+// Remove auto-start since black hole will handle it
+// document.addEventListener('click', () => {
+//   if (!window.hasInteracted) {
+//     window.hasInteracted = true;
+//     showScene(0);
+//   }
+// });
 
-setTimeout(() => {
-  if (!window.hasInteracted) {
-    window.hasInteracted = true;
-    showScene(0);
-  }
-}, 3000);
+// setTimeout(() => {
+//   if (!window.hasInteracted) {
+//     window.hasInteracted = true;
+//     showScene(0);
+//   }
+// }, 3000);
