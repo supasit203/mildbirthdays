@@ -269,6 +269,7 @@ function spawnShip(root, reverse = false, durationSec = 48, delaySec = 0) {
   flame.className = 'ship-flame';
   const trail = document.createElement('div');
   trail.className = 'trail';
+  body.style.setProperty('--scale', ship.style.getPropertyValue('--scale'));
   ship.appendChild(trail);
   ship.appendChild(flame);
   ship.appendChild(body);
