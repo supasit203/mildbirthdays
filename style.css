@@ -178,7 +178,7 @@ body {
 #cosmos {
   position: fixed;
   inset: 0;
-  z-index: 0;
+  z-index: 1;
 }
 
 /* Deep space starfield layers */
@@ -361,7 +361,7 @@ body {
 }
 
 .blackhole-container.dim {
-  opacity: 0.32;
+  opacity: 0.15;
   pointer-events: none;
   z-index: 0;
 }
