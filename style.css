@@ -319,6 +319,9 @@ body {
 
 .solar .orbit {
   position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
   border: 1px dashed rgba(255, 255, 255, 0.35);
   border-radius: 50%;
   animation: rotateOrbit var(--speed) linear infinite;
