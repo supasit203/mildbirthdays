@@ -340,7 +340,8 @@ function createInteractiveBlackHole() {
     this.x = centerX;
     this.y = centerY + this.orbital;
     this.yOrigin = centerY + this.orbital;
-    this.speed = (Math.floor(Math.random() * 2.5) + 1.5) * Math.PI / 180;
+    // Slower angular speed for calmer rotation
+    this.speed = (Math.random() * 1.0 + 0.6) * Math.PI / 180; // 0.6 to 1.6 deg/frame-equivalent
     this.rotation = 0;
     this.startRotation = (Math.floor(Math.random() * 360) + 1) * Math.PI / 180;
     this.id = stars.length;
@@ -357,8 +358,9 @@ function createInteractiveBlackHole() {
   }
 
   Star.prototype.draw = function() {
+    const tFactor = (Date.now() - startTime) / 140; // slowed from 50 -> 140
     if (!expanse) {
-      this.rotation = this.startRotation + ((Date.now() - startTime) / 50) * this.speed;
+      this.rotation = this.startRotation + tFactor * this.speed;
       if (!collapse) {
         if (this.y > this.yOrigin) this.y -= 2.5;
         if (this.y < this.yOrigin - 4) this.y += (this.yOrigin - this.y) / 10;
@@ -367,7 +369,7 @@ function createInteractiveBlackHole() {
         if (this.y < this.hoverPos - 4) this.y += 2.5;
       }
     } else {
-      this.rotation = this.startRotation + ((Date.now() - startTime) / 50) * (this.speed / 2);
+      this.rotation = this.startRotation + tFactor * (this.speed / 2);
       if (this.y > this.expansePos) this.y -= Math.floor(this.expansePos - this.y) / -140;
     }
 
@@ -412,20 +414,22 @@ function createInteractiveBlackHole() {
   }
 
   // Event listeners
-  center.addEventListener('click', function() {
+  const startShow = () => {
     collapse = false;
     expanse = true;
     center.classList.add('open');
-    
-    // Hide black hole background and reveal solar system
     setTimeout(() => {
-      container.classList.add('hidden');
-      // Start the slideshow
+      container.classList.add('dim');
       if (!window.hasInteracted) {
         window.hasInteracted = true;
         showScene(0);
       }
-    }, 1000);
+    }, 600);
+  };
+
+  center.addEventListener('click', startShow);
+  blackhole.addEventListener('click', (e) => {
+    if (e.target === blackhole) startShow();
   });
 
   center.addEventListener('mouseover', function() {

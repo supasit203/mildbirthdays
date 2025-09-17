@@ -360,6 +360,12 @@ body {
   pointer-events: none;
 }
 
+.blackhole-container.dim {
+  opacity: 0.32;
+  pointer-events: none;
+  z-index: 0;
+}
+
 .blackhole-center {
   width: 300px;
   height: 300px;
@@ -399,7 +405,7 @@ body {
 }
 
 .blackhole-center span {
-  color: #666;
+  color: #dddddd;
   font-family: 'Cormorant Garamond', serif;
   font-size: 18px;
   position: relative;
@@ -413,7 +419,7 @@ body {
   width: 16px;
   margin-right: 12px;
   margin-bottom: 4px;
-  background-color: #666;
+  background-color: #dddddd;
   transition: all 500ms;
 }
 
@@ -424,7 +430,7 @@ body {
   width: 16px;
   margin-left: 12px;
   margin-bottom: 4px;
-  background-color: #666;
+  background-color: #dddddd;
   transition: all 500ms;
 }
 
