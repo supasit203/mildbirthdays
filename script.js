@@ -29,11 +29,19 @@ const scenes = [
   },
   {
     type: "quote",
-    quote: "บางวันเราอาจไม่สมบูรณ์แบบ แต่เราพอดีสำหรับกันและกันเสมอ"
+    quote: "32 ปีที่โลกหมุนเวียน วันนี้มีฉันหมุนรอบเธอเสมอ"
+  },
+  {
+    type: "quote",
+    quote: "เราอาจไม่สมบูรณ์แบบ… แต่เราพอดีสำหรับกันและกัน"
   },
   {
     type: "quote",
     quote: "ขอบคุณที่เป็นแสงสว่างให้ทุกวันของฉัน"
+  },
+  {
+    type: "quote",
+    quote: "26/09/2025 สุขสันต์วันเกิดนะที่รัก ขอให้ปีนี้ใจสว่างกว่าเดิม"
   },
   {
     type: "final",
@@ -161,6 +169,13 @@ function renderCosmos() {
   const cosmosRoot = document.getElementById('cosmos');
   if (!cosmosRoot) return;
   cosmosRoot.innerHTML = '';
+
+  // Responsive scale based on viewport
+  const vw = window.innerWidth;
+  const vh = window.innerHeight;
+  const base = Math.min(vw, vh);
+  const scale = Math.max(0.6, Math.min(1, base / 800));
+  cosmosRoot.style.setProperty('--solarScale', scale);
 
   // Nebula layer
   const nebula = document.createElement('div');
@@ -298,9 +313,14 @@ function createInteractiveBlackHole() {
   const center = document.createElement('div');
   center.className = 'blackhole-center';
   center.innerHTML = '<span>ENTER</span>';
+
+  const hint = document.createElement('div');
+  hint.className = 'start-hint';
+  hint.textContent = 'แตะหน้าจอหรือกด ENTER เพื่อเริ่ม';
   
   blackhole.appendChild(canvas);
   blackhole.appendChild(center);
+  blackhole.appendChild(hint);
   container.appendChild(blackhole);
 
   // Black hole animation
@@ -419,7 +439,8 @@ function createInteractiveBlackHole() {
     expanse = true;
     center.classList.add('open');
     setTimeout(() => {
-      container.classList.add('dim');
+      const containerEl = document.getElementById('blackhole-container');
+      if (containerEl) containerEl.classList.add('dim');
       if (!window.hasInteracted) {
         window.hasInteracted = true;
         showScene(0);
@@ -443,6 +464,7 @@ function createInteractiveBlackHole() {
   // Show black hole center after a delay
   setTimeout(() => {
     center.classList.add('show');
+    hint.classList.add('show');
   }, 1000);
 
   init();
@@ -465,3 +487,8 @@ createInteractiveBlackHole();
 //     showScene(0);
 //   }
 // }, 3000);
+
+// Re-render solar system on resize to keep it visible
+window.addEventListener('resize', () => {
+  renderCosmos();
+});
