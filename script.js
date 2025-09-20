@@ -290,23 +290,17 @@ renderCosmos();
 
 // Interactive Black Hole - Full Screen Background
 function createInteractiveBlackHole() {
-  // ให้คลิกหรือแตะที่ปุ่ม ENTER (center) ก็เริ่มโชว์ได้
-  center.addEventListener('click', startShow);
-  center.addEventListener('touchstart', function(e) {
-    e.preventDefault();
-    startShow();
-  }, { passive: false });
   const container = document.getElementById('blackhole-container');
   if (!container) return;
 
   const blackhole = document.createElement('div');
   blackhole.className = 'blackhole-interactive';
-  
+
   const canvas = document.createElement('canvas');
   canvas.className = 'blackhole-canvas';
   canvas.width = window.innerWidth;
   canvas.height = window.innerHeight;
-  
+
   const center = document.createElement('div');
   center.className = 'blackhole-center';
   center.setAttribute('tabindex', '0');
@@ -315,7 +309,14 @@ function createInteractiveBlackHole() {
   const hint = document.createElement('div');
   hint.className = 'start-hint';
   hint.textContent = 'คลิกที่วงกลมเพื่อเริ่ม';
-  
+
+  // bind event หลังสร้าง center
+  center.addEventListener('click', startShow);
+  center.addEventListener('touchstart', function(e) {
+    e.preventDefault();
+    startShow();
+  }, { passive: false });
+
   blackhole.appendChild(canvas);
   blackhole.appendChild(center);
   blackhole.appendChild(hint);
