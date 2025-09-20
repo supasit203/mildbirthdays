@@ -446,8 +446,12 @@ function createInteractiveBlackHole() {
     }, 600);
   }
 
-  // ทำให้หน้าจอเริ่มต้นทั้งหมด (Black Hole) สามารถคลิกเพื่อเริ่มได้
+  // ทำให้หน้าจอเริ่มต้นทั้งหมด (Black Hole) สามารถคลิกหรือแตะเพื่อเริ่มได้
   blackhole.addEventListener('click', startShow);
+  blackhole.addEventListener('touchstart', function(e) {
+    e.preventDefault(); // ป้องกันการ trigger ซ้ำซ้อนหรือ scroll
+    startShow();
+  }, { passive: false });
 
   // Show black hole center after a delay
   setTimeout(() => {
