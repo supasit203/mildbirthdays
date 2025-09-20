@@ -364,7 +364,18 @@ function createInteractiveBlackHole() {
     e.preventDefault();
     startShow();
   }, { passive: false });
-  console.log('Bind event to center:', !!center, 'and blackhole:', !!blackhole);
+  // expose for debug manual trigger
+  window._startShow = startShow;
+  console.log('Bind event to center:', !!center, 'and blackhole:', !!blackhole, 'window._startShow:', !!window._startShow);
+
+  // TEMP debug: listen for any pointerdown on document to see if touches/clicks reach the page
+  function _debugPointer(e) {
+    console.log('pointerdown at', e.type, 'coords', e.clientX, e.clientY, 'window.hasInteracted=', !!window.hasInteracted);
+    if (!window.hasInteracted) {
+      try { startShow(); } catch (err) { console.error('startShow from pointerdown error', err); }
+    }
+  }
+  document.addEventListener('pointerdown', _debugPointer, { passive: true });
 
   blackhole.appendChild(canvas);
   blackhole.appendChild(center);
