@@ -358,6 +358,14 @@ function createInteractiveBlackHole() {
     startShow();
   }, { passive: false });
 
+  // Fallback: also allow clicking/tapping the outer container in case
+  // something overlays the interactive elements on some devices.
+  container.addEventListener('click', startShow);
+  container.addEventListener('touchstart', function(e) {
+    e.preventDefault();
+    startShow();
+  }, { passive: false });
+
     blackhole.appendChild(canvas);
     blackhole.appendChild(center);
     blackhole.appendChild(hint);
@@ -466,49 +474,7 @@ function createInteractiveBlackHole() {
     loop();
   }
 
-  // Event listeners
-  function startShow() {
-    // ป้องกันการรันซ้ำซ้อน
-    if (window.hasInteracted) return;
-    window.hasInteracted = true;
-
-    console.log('startShow called');
-    expanse = true;
-    center.classList.add('open');
-    hint.classList.remove('show'); // ซ่อนข้อความแนะนำ
-
-    setTimeout(() => {
-      const containerEl = document.getElementById('blackhole-container');
-      if (containerEl) {
-        containerEl.classList.add('dimmed');
-      }
-      const cosmosRoot = document.getElementById('cosmos');
-      if (cosmosRoot) {
-        cosmosRoot.classList.add('visible');
-        // ย้ายการสร้างยานอวกาศมาไว้ตรงนี้ เพื่อให้เริ่มทำงานเมื่อโชว์เริ่มเท่านั้น
-        spawnShip(cosmosRoot, false, 45, 0);
-        spawnShip(cosmosRoot, true, 52, 8);
-      }
-
-      try {
-        playBackgroundMusic();
-      } catch (e) {
-        console.error('playBackgroundMusic error', e);
-      }
-      try {
-        showScene(0);
-      } catch (e) {
-        console.error('showScene error', e);
-      }
-    }, 600);
-  }
-
-  // ทำให้หน้าจอเริ่มต้นทั้งหมด (Black Hole) สามารถคลิกหรือแตะเพื่อเริ่มได้
-  blackhole.addEventListener('click', startShow);
-  blackhole.addEventListener('touchstart', function(e) {
-    e.preventDefault(); // ป้องกันการ trigger ซ้ำซ้อนหรือ scroll
-    startShow();
-  }, { passive: false });
+  
 
   // Show black hole center after a delay
   setTimeout(() => {

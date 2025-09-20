@@ -362,7 +362,8 @@ body {
   width: 100%;
   height: 100%;
   pointer-events: all;
-  z-index: 1;
+  /* Put the blackhole above the cosmos so it can receive clicks while visible */
+  z-index: 9998;
   background: #000;
   transition: opacity 2s ease-out;
 }
