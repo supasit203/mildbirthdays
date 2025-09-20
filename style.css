@@ -72,6 +72,21 @@ body {
   right: 0;
 }
 
+/* Typing cursor shown while text is being typed */
+.scene .quote.typing::after {
+  content: '|';
+  display: inline-block;
+  margin-left: 6px;
+  color: #f0e9ff;
+  opacity: 0.9;
+  animation: blinkCursor 800ms steps(1) infinite;
+}
+
+@keyframes blinkCursor {
+  0%, 50% { opacity: 1; }
+  51%, 100% { opacity: 0; }
+}
+
 .footer {
   font-size: 16px;
   color: #a9a6c5;
@@ -632,3 +647,25 @@ body {
 }
 
 #blackhole-container .start-hint.show { opacity: 0.9; }
+
+/* Confetti / heart-fall particles for final celebration */
+.confetti-container {
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 10000;
+}
+.confetti {
+  position: absolute;
+  width: 10px;
+  height: 14px;
+  opacity: 0.95;
+  transform-origin: center;
+  will-change: transform, opacity;
+  animation: confettiFall linear forwards;
+}
+
+@keyframes confettiFall {
+  0% { transform: translateY(-10vh) rotate(0deg) translateX(0); opacity: 1; }
+  100% { transform: translateY(110vh) rotate(720deg) translateX(60px); opacity: 0; }
+}

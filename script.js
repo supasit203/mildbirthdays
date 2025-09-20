@@ -52,6 +52,11 @@ const scenes = [
 const sceneContainer = document.getElementById('scene');
 let currentIndex = 0;
 
+// Runtime settings
+const settings = {
+  playSound: false // change to true if you add assets/audio/blip.mp3 and want typing sounds
+};
+
 // (production) Minimal runtime - keep quiet unless errors occur
 
 
@@ -65,12 +70,18 @@ function showScene(index) {
     quote.className = 'quote';
     sceneContainer.appendChild(quote);
 
-    typeText(quote, scene.quote, 65).then(() => {
-      quote.style.opacity = '1';
-      quote.style.transform = 'translateY(0)';
-      const dwell = 2500; // extra time to read after typing finishes
+    // show immediately so per-character reveal is visible; add small translate-in
+    quote.style.opacity = '1';
+    quote.style.transform = 'translateY(0)';
+    // Smart dwell: base + per-char scaling (capped)
+    const baseDwell = 1200;
+    const perChar = 55; // ms per character
+    const maxDwell = 7000;
+
+    typeText(quote, scene.quote, 75).then(() => {
+      const computedDwell = Math.min(maxDwell, baseDwell + (scene.quote.length * perChar));
       if (index < scenes.length - 1) {
-        setTimeout(() => showScene(index + 1), dwell);
+        setTimeout(() => showScene(index + 1), computedDwell);
       }
     });
     return;
@@ -94,6 +105,8 @@ function showScene(index) {
     sceneContainer.appendChild(btn);
 
     playFinalAudio();
+    // celebration: confetti/heart fall
+    spawnConfetti(36);
     return;
   }
 
@@ -117,17 +130,34 @@ function playFinalAudio() {
 
 function typeText(element, text, speed = 60) {
   return new Promise(resolve => {
+    // show characters progressively; add 'typing' class to show cursor
     element.innerHTML = '';
+    element.classList.add('typing');
     const chars = Array.from(text);
     let i = 0;
+
+    const playBlip = () => {
+      if (!settings.playSound) return;
+      try {
+        // reuse a tiny audio buffer (very short sound) - optional and may be blocked
+        const blip = new Audio('assets/audio/blip.mp3');
+        blip.volume = 0.08;
+        blip.play().catch(() => {});
+      } catch (e) {
+        // ignore
+      }
+    };
+
     const tick = () => {
       if (i < chars.length) {
         const ch = chars[i];
         element.innerHTML += ch === '\n' ? '<br>' : ch;
         i++;
-        const delay = ch === ' ' ? speed * 0.6 : speed;
+        if (ch !== ' ' && ch !== '\n') playBlip();
+        const delay = ch === ' ' ? Math.max(30, speed * 0.6) : speed;
         setTimeout(tick, delay);
       } else {
+        element.classList.remove('typing');
         resolve();
       }
     };
@@ -288,6 +318,38 @@ function spawnShip(root, reverse = false, durationSec = 48, delaySec = 0) {
   }, (durationSec + delaySec) * 1000);
 }
 
+// Confetti / heart-fall generator for final celebration
+function spawnConfetti(count = 24) {
+  const container = document.createElement('div');
+  container.className = 'confetti-container';
+  document.body.appendChild(container);
+
+  const colors = ['#ff6b9d', '#ffd36b', '#8ec5ff', '#a7e3e8', '#d6a4ff'];
+  for (let i = 0; i < count; i++) {
+    const el = document.createElement('div');
+    el.className = 'confetti';
+    // random starting position across the top
+    const left = Math.random() * 100;
+    el.style.left = `${left}vw`;
+    // random rotation and tiny size variation
+    el.style.width = `${8 + Math.random() * 8}px`;
+    el.style.height = `${10 + Math.random() * 10}px`;
+    el.style.background = colors[Math.floor(Math.random() * colors.length)];
+    el.style.borderRadius = `${Math.random() > 0.5 ? '2px' : '50%'}`;
+    el.style.animationDuration = `${3 + Math.random() * 3}s`;
+    el.style.transform = `translateY(-20vh) rotate(${Math.random() * 360}deg)`;
+    container.appendChild(el);
+
+    // cleanup per element
+    setTimeout(() => {
+      el.remove();
+    }, (parseFloat(el.style.animationDuration) + 0.5) * 1000 + 200);
+  }
+
+  // remove container after all
+  setTimeout(() => container.remove(), 8000);
+}
+
 // Render cosmos background immediately
 renderCosmos();
 
@@ -318,7 +380,7 @@ function createInteractiveBlackHole() {
     // ป้องกันการรันซ้ำซ้อน
     if (window.hasInteracted) return;
     window.hasInteracted = true;
-    console.log('startShow called');
+    // console.log('startShow called'); // Commented out for cleanup
     expanse = true;
     center.classList.add('open');
     hint.classList.remove('show');
