@@ -310,12 +310,51 @@ function createInteractiveBlackHole() {
   hint.className = 'start-hint';
   hint.textContent = 'คลิกที่วงกลมเพื่อเริ่ม';
 
-  // bind event หลังสร้าง center
+  // ประกาศ startShow ก่อน bind event
+  function startShow() {
+    // ป้องกันการรันซ้ำซ้อน
+    if (window.hasInteracted) return;
+    window.hasInteracted = true;
+    console.log('startShow called');
+    expanse = true;
+    center.classList.add('open');
+    hint.classList.remove('show');
+    setTimeout(() => {
+      const containerEl = document.getElementById('blackhole-container');
+      if (containerEl) {
+        containerEl.classList.add('dimmed');
+      }
+      const cosmosRoot = document.getElementById('cosmos');
+      if (cosmosRoot) {
+        cosmosRoot.classList.add('visible');
+        spawnShip(cosmosRoot, false, 45, 0);
+        spawnShip(cosmosRoot, true, 52, 8);
+      }
+      try {
+        playBackgroundMusic();
+      } catch (e) {
+        console.error('playBackgroundMusic error', e);
+      }
+      try {
+        showScene(0);
+      } catch (e) {
+        console.error('showScene error', e);
+      }
+    }, 600);
+  }
+
+  // bind event หลังสร้าง center และ startShow
   center.addEventListener('click', startShow);
   center.addEventListener('touchstart', function(e) {
     e.preventDefault();
     startShow();
   }, { passive: false });
+  blackhole.addEventListener('click', startShow);
+  blackhole.addEventListener('touchstart', function(e) {
+    e.preventDefault();
+    startShow();
+  }, { passive: false });
+  console.log('Bind event to center:', !!center, 'and blackhole:', !!blackhole);
 
   blackhole.appendChild(canvas);
   blackhole.appendChild(center);
