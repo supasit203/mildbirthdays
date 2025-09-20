@@ -440,7 +440,8 @@ function createInteractiveBlackHole() {
     center.classList.add('open');
     setTimeout(() => {
       const containerEl = document.getElementById('blackhole-container');
-      if (containerEl) containerEl.classList.add('dim');
+      if (containerEl) containerEl.classList.add('dimmed');
+      document.getElementById('cosmos').classList.add('visible');
       if (!window.hasInteracted) {
         window.hasInteracted = true;
         showScene(0);
