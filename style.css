@@ -22,6 +22,11 @@ body {
     linear-gradient(180deg, #05070c, #0b0f17);
 }
 
+  :root {
+    /* Multiplier for orbit rotation durations. >1 = slower, <1 = faster */
+    --orbit-scale: 1.5;
+  }
+
 #container {
   width: 100%;
   max-width: 600px;
@@ -335,7 +340,8 @@ body {
   transform-origin: center center;
   border: 1px dashed rgba(255, 255, 255, 0.35);
   border-radius: 50%;
-  animation: rotateOrbit var(--speed) linear infinite;
+  /* animation duration is provided by --speed (set in JS). Optionally scaled by --orbit-scale */
+  animation: rotateOrbit calc(var(--speed) * var(--orbit-scale, 1)) linear infinite;
 }
 
 @keyframes rotateOrbit {

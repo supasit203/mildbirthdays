@@ -52,14 +52,7 @@ const scenes = [
 const sceneContainer = document.getElementById('scene');
 let currentIndex = 0;
 
-// Debug helpers: global error handlers and a visible debug trigger
-console.log('script.js loaded');
-window.addEventListener('error', (e) => {
-  console.error('Global error caught:', e.message || e);
-});
-window.addEventListener('unhandledrejection', (e) => {
-  console.error('Unhandled promise rejection:', e.reason || e);
-});
+// (production) Minimal runtime - keep quiet unless errors occur
 
 
 function showScene(index) {
@@ -353,7 +346,7 @@ function createInteractiveBlackHole() {
     }, 600);
   }
 
-  // bind event หลังสร้าง center และ startShow
+  // bind event (click/touch) for center and background
   center.addEventListener('click', startShow);
   center.addEventListener('touchstart', function(e) {
     e.preventDefault();
@@ -364,23 +357,11 @@ function createInteractiveBlackHole() {
     e.preventDefault();
     startShow();
   }, { passive: false });
-  // expose for debug manual trigger
-  window._startShow = startShow;
-  console.log('Bind event to center:', !!center, 'and blackhole:', !!blackhole, 'window._startShow:', !!window._startShow);
 
-  // TEMP debug: listen for any pointerdown on document to see if touches/clicks reach the page
-  function _debugPointer(e) {
-    console.log('pointerdown at', e.type, 'coords', e.clientX, e.clientY, 'window.hasInteracted=', !!window.hasInteracted);
-    if (!window.hasInteracted) {
-      try { startShow(); } catch (err) { console.error('startShow from pointerdown error', err); }
-    }
-  }
-  document.addEventListener('pointerdown', _debugPointer, { passive: true });
-
-  blackhole.appendChild(canvas);
-  blackhole.appendChild(center);
-  blackhole.appendChild(hint);
-  container.appendChild(blackhole);
+    blackhole.appendChild(canvas);
+    blackhole.appendChild(center);
+    blackhole.appendChild(hint);
+    container.appendChild(blackhole);
 
   // Black hole animation
   const ctx = canvas.getContext('2d');
@@ -542,35 +523,7 @@ function createInteractiveBlackHole() {
 // Create interactive black hole
 createInteractiveBlackHole();
 
-// Create a visible debug button to manually trigger startShow (helps on devices where touch/click fails)
-function addDebugButton() {
-  try {
-    const existing = document.getElementById('debug-start-btn');
-    if (existing) return;
-    const btn = document.createElement('button');
-    btn.id = 'debug-start-btn';
-    btn.textContent = 'DEBUG START';
-    btn.style.position = 'fixed';
-    btn.style.right = '18px';
-    btn.style.bottom = '18px';
-    btn.style.zIndex = '99999';
-    btn.style.padding = '10px 14px';
-    btn.style.background = 'rgba(255,255,255,0.08)';
-    btn.style.color = '#fff';
-    btn.style.border = '1px solid rgba(255,255,255,0.12)';
-    btn.style.borderRadius = '8px';
-    btn.style.backdropFilter = 'blur(4px)';
-    btn.addEventListener('click', () => {
-      console.log('Debug button clicked');
-      if (window._startShow) window._startShow();
-    });
-    btn.addEventListener('touchstart', (e) => { e.preventDefault(); console.log('Debug touchstart'); if (window._startShow) window._startShow(); }, { passive: false });
-    document.body.appendChild(btn);
-  } catch (e) { console.error('addDebugButton error', e); }
-}
-
-// add debug button after short delay to ensure DOM ready
-setTimeout(addDebugButton, 600);
+// Production: no debug UI
 
 // Update solar system scale on resize, without re-rendering everything
 window.addEventListener('resize', () => {
