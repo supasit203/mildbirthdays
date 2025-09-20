@@ -312,6 +312,7 @@ function createInteractiveBlackHole() {
   
   const center = document.createElement('div');
   center.className = 'blackhole-center';
+  center.setAttribute('tabindex', '0');
   center.innerHTML = '<span>ENTER</span>';
 
   const hint = document.createElement('div');
@@ -474,6 +475,7 @@ function createInteractiveBlackHole() {
   setTimeout(() => {
     center.classList.add('show');
     hint.classList.add('show');
+    center.focus();
   }, 1000);
 
   init();
