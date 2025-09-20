@@ -478,31 +478,7 @@ body {
 .ship-body {
   width: 100%;
   height: 100%;
-  background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 160 80"><defs>
-  <linearGradient id="phaser" x1="0" y1="0" x2="1" y2="0"><stop offset="0%" stop-color="%23ff7766"/><stop offset="100%" stop-color="%23ffa866"/></linearGradient>
-  <linearGradient id="saucerG" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="%23e9f0ff"/><stop offset="100%" stop-color="%23b8c9e8"/></linearGradient>
-  <linearGradient id="nacelleBlue" x1="0" y1="0" x2="1" y2="0"><stop offset="0%" stop-color="%238ec5ff"/><stop offset="100%" stop-color="%234a78d1"/></linearGradient>
-  <radialGradient id="glassDome" cx="50%" cy="40%" r="50%"><stop offset="0%" stop-color="%23ffffff"/><stop offset="100%" stop-color="%238ec5ff"/></radialGradient>
-  </defs>
-  <!-- shadow -->
-  <ellipse cx="80" cy="68" rx="34" ry="8" fill="rgba(0,0,0,0.25)"/>
-  <!-- saucer -->
-  <ellipse cx="80" cy="40" rx="46" ry="16" fill="url(%23saucerG)" stroke="%23a8b9d6" stroke-width="1"/>
-  <ellipse cx="80" cy="36" rx="18" ry="8" fill="url(%23glassDome)" opacity="0.9"/>
-  <!-- neck -->
-  <rect x="75" y="44" width="10" height="10" rx="3" fill="%23c9dbf5"/>
-  <!-- engineering hull -->
-  <rect x="60" y="52" width="40" height="8" rx="4" fill="%23c9dbf5" stroke="%23a8b9d6" stroke-width="1"/>
-  <!-- pylons -->
-  <rect x="48" y="54" width="8" height="6" fill="%23c9dbf5" transform="skewY(-12)"/>
-  <rect x="104" y="54" width="8" height="6" fill="%23c9dbf5" transform="skewY(12)"/>
-  <!-- nacelles -->
-  <rect x="32" y="56" width="32" height="6" rx="3" fill="url(%23nacelleBlue)"/>
-  <rect x="96" y="56" width="32" height="6" rx="3" fill="url(%23nacelleBlue)"/>
-  <!-- bussard collectors -->
-  <rect x="28" y="56" width="6" height="6" rx="3" fill="url(%23phaser)"/>
-  <rect x="132" y="56" width="6" height="6" rx="3" fill="url(%23phaser)"/>
-</svg>');
+  background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 160 80"><defs><linearGradient id="phaser" x1="0" y1="0" x2="1" y2="0"><stop offset="0%" stop-color="%23ff7766"/><stop offset="100%" stop-color="%23ffa866"/></linearGradient><linearGradient id="saucerG" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="%23e9f0ff"/><stop offset="100%" stop-color="%23b8c9e8"/></linearGradient><linearGradient id="nacelleBlue" x1="0" y1="0" x2="1" y2="0"><stop offset="0%" stop-color="%238ec5ff"/><stop offset="100%" stop-color="%234a78d1"/></linearGradient><radialGradient id="glassDome" cx="50%" cy="40%" r="50%"><stop offset="0%" stop-color="%23ffffff"/><stop offset="100%" stop-color="%238ec5ff"/></radialGradient></defs><ellipse cx="80" cy="68" rx="34" ry="8" fill="rgba(0,0,0,0.25)"/><ellipse cx="80" cy="40" rx="46" ry="16" fill="url(%23saucerG)" stroke="%23a8b9d6" stroke-width="1"/><ellipse cx="80" cy="36" rx="18" ry="8" fill="url(%23glassDome)" opacity="0.9"/><rect x="75" y="44" width="10" height="10" rx="3" fill="%23c9dbf5"/><rect x="60" y="52" width="40" height="8" rx="4" fill="%23c9dbf5" stroke="%23a8b9d6" stroke-width="1"/><rect x="48" y="54" width="8" height="6" fill="%23c9dbf5" transform="skewY(-12)"/><rect x="104" y="54" width="8" height="6" fill="%23c9dbf5" transform="skewY(12)"/><rect x="32" y="56" width="32" height="6" rx="3" fill="url(%23nacelleBlue)"/><rect x="96" y="56" width="32" height="6" rx="3" fill="url(%23nacelleBlue)"/><rect x="28" y="56" width="6" height="6" rx="3" fill="url(%23phaser)"/><rect x="132" y="56" width="6" height="6" rx="3" fill="url(%23phaser)"/></svg>');
   background-size: contain;
   background-repeat: no-repeat;
   animation: bob 3.8s ease-in-out infinite;

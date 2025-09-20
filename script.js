@@ -449,9 +449,17 @@ function createInteractiveBlackHole() {
     }, 600);
   };
 
+
   center.addEventListener('click', startShow);
   blackhole.addEventListener('click', (e) => {
     if (e.target === blackhole) startShow();
+  });
+
+  // เพิ่ม keydown event สำหรับ Enter เพื่อเริ่มโชว์
+  document.addEventListener('keydown', function(e) {
+    if (!window.hasInteracted && (e.key === 'Enter' || e.keyCode === 13)) {
+      startShow();
+    }
   });
 
   center.addEventListener('mouseover', function() {
