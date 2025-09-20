@@ -456,12 +456,15 @@ function createInteractiveBlackHole() {
     if (e.target === blackhole) startShow();
   });
 
-  // เพิ่ม keydown event สำหรับ Enter เพื่อเริ่มโชว์
-  document.addEventListener('keydown', function(e) {
+  // เพิ่ม keydown event สำหรับ Enter เพื่อเริ่มโชว์ (รองรับทั้ง document และ window)
+  function handleEnterStart(e) {
     if (!window.hasInteracted && (e.key === 'Enter' || e.keyCode === 13)) {
+      console.log('Enter pressed, starting show');
       startShow();
     }
-  });
+  }
+  document.addEventListener('keydown', handleEnterStart);
+  window.addEventListener('keydown', handleEnterStart);
 
   center.addEventListener('mouseover', function() {
     if (!expanse) collapse = true;
