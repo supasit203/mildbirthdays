@@ -308,7 +308,7 @@ function createInteractiveBlackHole() {
 
   const hint = document.createElement('div');
   hint.className = 'start-hint';
-  hint.textContent = 'แตะหน้าจอหรือกด ENTER เพื่อเริ่ม';
+  hint.textContent = 'คลิกที่วงกลมเพื่อเริ่ม';
   
   blackhole.appendChild(canvas);
   blackhole.appendChild(center);
@@ -321,7 +321,6 @@ function createInteractiveBlackHole() {
   const centerX = window.innerWidth / 2;
   const centerY = window.innerHeight / 2;
   let stars = [];
-  let collapse = false;
   let expanse = false;
   let startTime = Date.now();
 
@@ -373,13 +372,9 @@ function createInteractiveBlackHole() {
     const tFactor = (Date.now() - startTime) / 140; // slowed from 50 -> 140
     if (!expanse) {
       this.rotation = this.startRotation + tFactor * this.speed;
-      if (!collapse) {
-        if (this.y > this.yOrigin) this.y -= 2.5;
-        if (this.y < this.yOrigin - 4) this.y += (this.yOrigin - this.y) / 10;
-      } else {
-        if (this.y > this.hoverPos) this.y -= (this.hoverPos - this.y) / -5;
-        if (this.y < this.hoverPos - 4) this.y += 2.5;
-      }
+      // ทำให้ดาวเคลื่อนไหวตามปกติ โดยไม่ต้องมีเอฟเฟกต์ตอนเอาเมาส์ไปชี้
+      if (this.y > this.yOrigin) this.y -= 2.5;
+      if (this.y < this.yOrigin - 4) this.y += (this.yOrigin - this.y) / 10;
     } else {
       this.rotation = this.startRotation + tFactor * (this.speed / 2);
       if (this.y > this.expansePos) this.y -= Math.floor(this.expansePos - this.y) / -140;
@@ -425,6 +420,7 @@ function createInteractiveBlackHole() {
 
   // Event listeners
   function startShow() {
+    // ป้องกันการรันซ้ำซ้อน
     if (window.hasInteracted) return;
     window.hasInteracted = true;
 
@@ -450,26 +446,8 @@ function createInteractiveBlackHole() {
     }, 600);
   }
 
+  // ทำให้วงกลมตรงกลางสามารถคลิกเพื่อเริ่มได้เพียงอย่างเดียว
   center.addEventListener('click', startShow);
-  blackhole.addEventListener('click', (e) => {
-    if (e.target === blackhole) startShow();
-  });
-
-  function handleEnterStart(e) {
-    // เมื่อกด Enter ให้เรียก startShow (มีตัวป้องกันการรันซ้ำอยู่ข้างในแล้ว)
-    if (e.key === 'Enter' || e.keyCode === 13) {
-      startShow();
-    }
-  }
-  document.addEventListener('keydown', handleEnterStart);
-
-  center.addEventListener('mouseover', function() {
-    if (!expanse) collapse = true;
-  });
-
-  center.addEventListener('mouseout', function() {
-    if (!expanse) collapse = false;
-  });
 
   // Show black hole center after a delay
   setTimeout(() => {
