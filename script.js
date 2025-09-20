@@ -431,6 +431,7 @@ function createInteractiveBlackHole() {
     if (window.hasInteracted) return;
     window.hasInteracted = true;
 
+    console.log('startShow called');
     expanse = true;
     center.classList.add('open');
     hint.classList.remove('show'); // ซ่อนข้อความแนะนำ
@@ -448,8 +449,16 @@ function createInteractiveBlackHole() {
         spawnShip(cosmosRoot, true, 52, 8);
       }
 
-      playBackgroundMusic();
-      showScene(0);
+      try {
+        playBackgroundMusic();
+      } catch (e) {
+        console.error('playBackgroundMusic error', e);
+      }
+      try {
+        showScene(0);
+      } catch (e) {
+        console.error('showScene error', e);
+      }
     }, 600);
   }
 
