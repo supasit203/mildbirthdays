@@ -375,12 +375,6 @@ body {
   pointer-events: none;
 }
 
-#blackhole-container.dim {
-  opacity: 0.15;
-  pointer-events: none;
-  z-index: 0;
-}
-
 .blackhole-center {
   width: 300px;
   height: 300px;

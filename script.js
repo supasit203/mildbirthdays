@@ -94,14 +94,6 @@ function showScene(index) {
     return;
   }
 
-  if (index === 0) {
-    playBackgroundMusic();
-  }
-
-  if (index < scenes.length - 1 && scene.type !== 'quote') {
-    const baseDelay = 6000;
-    setTimeout(() => showScene(index + 1), baseDelay);
-  }
 }
 
 function playBackgroundMusic() {
@@ -165,17 +157,21 @@ setInterval(() => {
   if (Math.random() < 0.7) spawnShootingStar();
 }, 3500);
 
-function renderCosmos() {
+function updateSolarScale() {
   const cosmosRoot = document.getElementById('cosmos');
   if (!cosmosRoot) return;
-  cosmosRoot.innerHTML = '';
-
   // Responsive scale based on viewport
   const vw = window.innerWidth;
   const vh = window.innerHeight;
   const base = Math.min(vw, vh);
   const scale = Math.max(0.6, Math.min(1, base / 800));
   cosmosRoot.style.setProperty('--solarScale', scale);
+}
+
+function renderCosmos() {
+  const cosmosRoot = document.getElementById('cosmos');
+  if (!cosmosRoot) return;
+  cosmosRoot.innerHTML = '';
 
   // Nebula layer
   const nebula = document.createElement('div');
@@ -417,9 +413,7 @@ function createInteractiveBlackHole() {
     ctx.fillRect(0, 0, canvas.width, canvas.height);
 
     for (let i = 0; i < stars.length; i++) {
-      if (stars[i] !== stars) {
-        stars[i].draw();
-      }
+      stars[i].draw();
     }
 
     requestAnimationFrame(loop);
@@ -441,11 +435,18 @@ function createInteractiveBlackHole() {
     center.classList.add('open');
     setTimeout(() => {
       const containerEl = document.getElementById('blackhole-container');
-      if (containerEl) containerEl.classList.add('dimmed');
-      document.getElementById('cosmos').classList.add('visible');
+      if (containerEl) {
+        containerEl.classList.add('dimmed');
+      }
+      const cosmosRoot = document.getElementById('cosmos');
+      cosmosRoot.classList.add('visible');
+
       if (!window.hasInteracted) {
         window.hasInteracted = true;
+        playBackgroundMusic();
         showScene(0);
+        spawnShip(cosmosRoot, false, 45, 0);
+        spawnShip(cosmosRoot, true, 52, 8);
       }
     }, 600);
   };
@@ -464,7 +465,6 @@ function createInteractiveBlackHole() {
     }
   }
   document.addEventListener('keydown', handleEnterStart);
-  window.addEventListener('keydown', handleEnterStart);
 
   center.addEventListener('mouseover', function() {
     if (!expanse) collapse = true;
@@ -487,22 +487,13 @@ function createInteractiveBlackHole() {
 // Create interactive black hole
 createInteractiveBlackHole();
 
-// Remove auto-start since black hole will handle it
-// document.addEventListener('click', () => {
-//   if (!window.hasInteracted) {
-//     window.hasInteracted = true;
-//     showScene(0);
-//   }
-// });
-
-// setTimeout(() => {
-//   if (!window.hasInteracted) {
-//     window.hasInteracted = true;
-//     showScene(0);
-//   }
-// }, 3000);
-
-// Re-render solar system on resize to keep it visible
+// Update solar system scale on resize, without re-rendering everything
 window.addEventListener('resize', () => {
-  renderCosmos();
+  updateSolarScale();
+  // Note: The black hole canvas is not responsive to resize.
+  // Making it fully responsive would require re-initializing the canvas
+  // and all the star positions, which is a more significant change.
 });
+
+// Set initial scale
+updateSolarScale();
