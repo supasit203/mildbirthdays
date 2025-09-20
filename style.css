@@ -316,11 +316,15 @@ body {
 
 .solar .sun {
   position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
   width: 120px;
   height: 120px;
   border-radius: 50%;
   background: radial-gradient(circle at 30% 30%, #ffd36b, #ff9a3c 60%, #ff7b3d);
   box-shadow: 0 0 40px 15px rgba(255, 153, 51, 0.4), 0 0 80px 30px rgba(255, 153, 51, 0.25);
+  z-index: 2;
 }
 
 .solar .orbit {
