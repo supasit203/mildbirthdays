@@ -446,8 +446,8 @@ function createInteractiveBlackHole() {
     }, 600);
   }
 
-  // ทำให้วงกลมตรงกลางสามารถคลิกเพื่อเริ่มได้เพียงอย่างเดียว
-  center.addEventListener('click', startShow);
+  // ทำให้หน้าจอเริ่มต้นทั้งหมด (Black Hole) สามารถคลิกเพื่อเริ่มได้
+  blackhole.addEventListener('click', startShow);
 
   // Show black hole center after a delay
   setTimeout(() => {
