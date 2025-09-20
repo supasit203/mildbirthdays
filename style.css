@@ -332,14 +332,15 @@ body {
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
+  transform-origin: center center;
   border: 1px dashed rgba(255, 255, 255, 0.35);
   border-radius: 50%;
   animation: rotateOrbit var(--speed) linear infinite;
 }
 
 @keyframes rotateOrbit {
-  from { transform: rotate(0deg); }
-  to { transform: rotate(360deg); }
+  from { transform: translate(-50%, -50%) rotate(0deg); }
+  to { transform: translate(-50%, -50%) rotate(360deg); }
 }
 
 @keyframes drift {
