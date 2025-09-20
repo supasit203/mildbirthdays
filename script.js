@@ -290,6 +290,12 @@ renderCosmos();
 
 // Interactive Black Hole - Full Screen Background
 function createInteractiveBlackHole() {
+  // ให้คลิกหรือแตะที่ปุ่ม ENTER (center) ก็เริ่มโชว์ได้
+  center.addEventListener('click', startShow);
+  center.addEventListener('touchstart', function(e) {
+    e.preventDefault();
+    startShow();
+  }, { passive: false });
   const container = document.getElementById('blackhole-container');
   if (!container) return;
 
