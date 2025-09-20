@@ -424,8 +424,7 @@ function createInteractiveBlackHole() {
   }
 
   // Event listeners
-  const startShow = () => {
-    // ป้องกันการรันซ้ำซ้อนเมื่อผู้ใช้คลิกหรือกด Enter หลายครั้ง
+  function startShow() {
     if (window.hasInteracted) return;
     window.hasInteracted = true;
 
@@ -449,7 +448,7 @@ function createInteractiveBlackHole() {
       playBackgroundMusic();
       showScene(0);
     }, 600);
-  };
+  }
 
   center.addEventListener('click', startShow);
   blackhole.addEventListener('click', (e) => {
