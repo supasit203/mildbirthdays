@@ -392,6 +392,7 @@ body {
   transition: all 500ms;
   opacity: 0;
   pointer-events: none;
+  outline: none;
 }
 
 .blackhole-center.show {

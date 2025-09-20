@@ -256,11 +256,6 @@ function renderCosmos() {
 
   cosmosRoot.appendChild(solar);
 
-  // Spaceships
-  spawnShip(cosmosRoot, false, 45, 0);
-  spawnShip(cosmosRoot, true, 52, 8);
-
-  // Interactive Black hole will be created separately
 }
 
 function spawnShip(root, reverse = false, durationSec = 48, delaySec = 0) {
@@ -430,37 +425,40 @@ function createInteractiveBlackHole() {
 
   // Event listeners
   const startShow = () => {
-    collapse = false;
+    // ป้องกันการรันซ้ำซ้อนเมื่อผู้ใช้คลิกหรือกด Enter หลายครั้ง
+    if (window.hasInteracted) return;
+    window.hasInteracted = true;
+
     expanse = true;
     center.classList.add('open');
+    hint.classList.remove('show'); // ซ่อนข้อความแนะนำ
+
     setTimeout(() => {
       const containerEl = document.getElementById('blackhole-container');
       if (containerEl) {
         containerEl.classList.add('dimmed');
       }
       const cosmosRoot = document.getElementById('cosmos');
-      cosmosRoot.classList.add('visible');
-
-      if (!window.hasInteracted) {
-        window.hasInteracted = true;
-        playBackgroundMusic();
-        showScene(0);
+      if (cosmosRoot) {
+        cosmosRoot.classList.add('visible');
+        // ย้ายการสร้างยานอวกาศมาไว้ตรงนี้ เพื่อให้เริ่มทำงานเมื่อโชว์เริ่มเท่านั้น
         spawnShip(cosmosRoot, false, 45, 0);
         spawnShip(cosmosRoot, true, 52, 8);
       }
+
+      playBackgroundMusic();
+      showScene(0);
     }, 600);
   };
-
 
   center.addEventListener('click', startShow);
   blackhole.addEventListener('click', (e) => {
     if (e.target === blackhole) startShow();
   });
 
-  // เพิ่ม keydown event สำหรับ Enter เพื่อเริ่มโชว์ (รองรับทั้ง document และ window)
   function handleEnterStart(e) {
-    if (!window.hasInteracted && (e.key === 'Enter' || e.keyCode === 13)) {
-      console.log('Enter pressed, starting show');
+    // เมื่อกด Enter ให้เรียก startShow (มีตัวป้องกันการรันซ้ำอยู่ข้างในแล้ว)
+    if (e.key === 'Enter' || e.keyCode === 13) {
       startShow();
     }
   }
