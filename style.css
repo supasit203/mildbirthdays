@@ -22,7 +22,11 @@ body {
     linear-gradient(180deg, #05070c, #0b0f17);
 }
 
-  :root {
+  :root {    
+    /* Colors */
+    --primary-text: #dcd7f7;
+    --secondary-text: #a9a6c5;
+
     /* Multiplier for orbit rotation durations. >1 = slower, <1 = faster */
     --orbit-scale: 1.5;
   }
@@ -63,7 +67,7 @@ body {
   font-size: 26px;
   line-height: 1.6;
   font-style: italic;
-  color: #dcd7f7;
+  color: var(--primary-text);
   margin-top: 30px;
   padding: 0 20px;
   position: absolute;
@@ -89,7 +93,7 @@ body {
 
 .footer {
   font-size: 16px;
-  color: #a9a6c5;
+  color: var(--secondary-text);
   letter-spacing: 1px;
   margin-top: 30px;
   font-weight: 300;
@@ -141,8 +145,8 @@ body {
   display: flex;
   flex-direction: column;
   justify-content: center;
-  align-items: center;
-  color: #dcd7f7;
+  align-items: center;  
+  color: var(--primary-text);
   text-shadow: 0 2px 10px rgba(0,0,0,0.45);
   font-size: 28px;
   line-height: 1.6;
@@ -619,7 +623,7 @@ body {
   bottom: 30px;
   left: 0;
   right: 0;
-  color: #dcd7f7;
+  color: var(--primary-text);
   font-size: 28px;
   font-weight: 500;
   text-shadow: 0 2px 10px rgba(255,255,255,0.8);
@@ -630,7 +634,7 @@ body {
   bottom: 10px;
   left: 0;
   right: 0;
-  color: #a9a6c5;
+  color: var(--secondary-text);
   font-size: 18px;
   font-weight: 400;
 }
@@ -656,67 +660,211 @@ body {
   z-index: 10000;
 }
 .confetti {
-  position: absolute;
-  width: 10px;
-  height: 14px;
-  opacity: 0.95;
-  transform-origin: center;
-  will-change: transform, opacity;
-  animation: confettiFall linear forwards;
+    position: absolute;
+    width: 10px;
+    height: 14px;
+    opacity: 0.95;
+    transform-origin: center;
+    will-change: transform, opacity;
+    animation: confettiFall linear forwards;
 }
 
 @keyframes confettiFall {
-  0% { transform: translateY(-10vh) rotate(0deg) translateX(0); opacity: 1; }
-  100% { transform: translateY(110vh) rotate(720deg) translateX(60px); opacity: 0; }
+    0% { transform: translateY(-10vh) rotate(0deg) translateX(0); opacity: 1; }
+    100% { transform: translateY(110vh) rotate(720deg) translateX(60px); opacity: 0; }
 }
 
-/* Cake scaffolding */
+/* --- [NEW] Cake Styling --- */
 #cake-root {
-  position: fixed;
-  left: 50%;
-  top: 50%;
-  transform: translate(-50%, -40%) scale(var(--cake-scale, 1));
-  z-index: 1000;
-  pointer-events: none;
-  display: none; /* shown when transforming */
+    position: fixed;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%) scale(var(--cake-scale, 1));
+    z-index: 1000;
+    pointer-events: none;
+    display: none; /* shown when transforming */
+    transition: opacity 360ms ease, transform 900ms cubic-bezier(.22,1.2,.24,1);
+    transform-origin: center bottom;
 }
+
+#cake-root.assembled {
+    transform: translate(-50%, -50%) scale(var(--cake-scale, 1)) translateY(0);
+}
+
 .cake {
-  width: 320px;
-  max-width: 86vw;
-  margin: 0 auto;
-  pointer-events: none;
-  transform-origin: center bottom;
+    position: relative;
+    width: 350px; /* Increased from 250px */
+    height: 280px; /* Increased from 200px */
+    margin: 0 auto;
+    transform: scale(0.4) translateY(40px); /* Start smaller and centered */
+    opacity: 0; /* Start invisible */
+    transition: transform 1500ms cubic-bezier(0.19, 1, 0.22, 1), opacity 1200ms ease-out; /* Slower, smoother float-in */
 }
-.cake .layer {
-  width: 100%;
-  height: 64px;
-  border-radius: 14px;
-  background: linear-gradient(180deg, #fff6e6, #ffd3a6);
-  box-shadow: 0 8px 18px rgba(0,0,0,0.18);
-  margin-bottom: 10px;
-  transform: translateY(-40vh) scale(0.6);
-  transition: transform 700ms cubic-bezier(.22,1.2,.24,1);
+.cake.assembled {
+    transform: scale(1) translateY(80px); /* Final position - Moved down */
+    opacity: 1; /* [FIX] Ensure cake remains visible */
 }
-.cake .layer.mid { background: linear-gradient(180deg, #fff4f8, #ffcfe0); height: 72px; }
-.cake .layer.bottom { background: linear-gradient(180deg, #fffbe6, #ffd78b); height: 90px; }
-.cake.assembled .layer { transform: translateY(0) scale(1); }
-.cake .plate {
-  height: 12px;
-  background: radial-gradient(ellipse at center, #f3f3f3, #d6d6d6);
-  border-radius: 50%;
-  margin-top: -6px;
-  transform: scaleX(0.8) translateY(10px);
+
+.plate {
+    width: 378px; /* 270 * 1.4 */
+    height: 154px; /* 110 * 1.4 */
+    position: absolute;
+    bottom: -14px; /* -10 * 1.4 */
+    left: -14px; /* -10 * 1.4 */
+    background-color: #ccc;
+    border-radius: 50%;
+    box-shadow: 0 2px 0 #b3b3b3, 0 4px 0 #b3b3b3, 0 5px 40px rgba(0,0,0,0.5);
 }
-.cake .candles { display: flex; justify-content: center; gap: 12px; margin-top: -36px; }
-.cake .candle {
-  width: 8px; height: 30px; background: #ffffff; border-radius: 4px; box-shadow: 0 2px 4px rgba(0,0,0,0.12);
+
+.cake > .layer {
+    position: absolute;
+    display: block;
+    width: 350px; /* 250 * 1.4 */
+    height: 140px; /* 100 * 1.4 */
+    border-radius: 50%;
+    background-color: #553c13;
+    box-shadow: 0 2px 0px #624516, 0 4px 0px #4a3411, 0 6px 0px #493310, 0 8px 0px #483210, 0 10px 0px #46310f, 0 12px 0px #45300f, 0 14px 0px #442f0e, 0 16px 0px #422e0e, 0 18px 0px #412d0d, 0 20px 0px #402c0d, 0 22px 0px #3e2b0c, 0 24px 0px #3d2a0c, 0 26px 0px #3c290b, 0 28px 0px #3a280b, 0 30px 0px #39270a;
 }
-.candle .flame { width: 12px; height: 12px; background: radial-gradient(circle at 40% 30%, #fff, #ffd36b 40%, #ff8b3d 70%); border-radius: 50%; margin: -10px auto 0; transform-origin: center; animation: flameBounce 800ms ease-in-out infinite; }
-@keyframes flameBounce { 0% { transform: scale(0.9) translateY(0);} 50% { transform: scale(1.05) translateY(-4px);} 100% { transform: scale(0.9) translateY(0);} }
+
+.layer-top { top: 0px; }
+.layer-middle { top: 46px; } /* 33 * 1.4 */
+.layer-bottom { top: 92px; } /* 66 * 1.4 */
+
+.icing {
+    top: 3px; /* 2 * 1.4 */
+    left: 7px; /* 5 * 1.4 */
+    background-color: #f0e4d0;
+    width: 336px; /* 240 * 1.4 */
+    height: 126px; /* 90 * 1.4 */
+    border-radius: 50%;
+    position: absolute;
+}
+
+.icing:before {
+    content: "";
+    position: absolute;
+    top: 6px; /* 4 * 1.4 */
+    right: 7px; /* 5 * 1.4 */
+    bottom: 8px; /* 6 * 1.4 */
+    left: 7px; /* 5 * 1.4 */
+    background-color: #f6f0e6;
+    box-shadow: 0 0 4px #f8f3e9, 0 0 4px #f8f3e9, 0 0 4px #f8f3e9;
+    border-radius: 50%;
+    z-index: 1;
+}
+
+.drip {
+    display: block;
+    position: absolute;
+    width: 70px; /* 50 * 1.4 */
+    height: 84px; /* 60 * 1.4 */
+    border-bottom-left-radius: 25px;
+    border-bottom-right-radius: 25px;
+    background-color: #f0e4d0;
+}
+
+.drip1 {
+    top: 74px; /* 53 * 1.4 */
+    left: 7px; /* 5 * 1.4 */
+    transform: skewY(15deg);
+    height: 67px; /* 48 * 1.4 */
+    width: 56px; /* 40 * 1.4 */
+}
+
+.drip2 {
+    top: 97px; /* 69 * 1.4 */
+    left: 253px; /* 181 * 1.4 */
+    transform: skewY(-15deg);
+}
+
+.drip3 {
+    top: 76px; /* 54 * 1.4 */
+    left: 126px; /* 90 * 1.4 */
+    width: 112px; /* 80 * 1.4 */
+    border-bottom-left-radius: 56px; /* 40 * 1.4 */
+    border-bottom-right-radius: 56px; /* 40 * 1.4 */
+}
+
+.candle {
+    background-color: #7B020B;
+    width: 22px; /* 16 * 1.4 */
+    height: 70px; /* 50 * 1.4 */
+    border-radius: 8px / 4px;
+    top: -28px; /* -20 * 1.4 */
+    left: 50%;
+    margin-left: -11px; /* -8 * 1.4 */
+    z-index: 10;
+    position: absolute;
+}
+
+.candle:before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 22px; /* 16 * 1.4 */
+    height: 11px; /* 8 * 1.4 */
+    border-radius: 50%;
+    background-color: #a8030f;
+}
+
+.flame {
+    position: absolute;
+    background-color: orange;
+    width: 21px; /* 15 * 1.4 */
+    height: 49px; /* 35 * 1.4 */
+    border-radius: 10px 10px 10px 10px / 25px 25px 10px 10px;
+    top: -48px; /* -34 * 1.4 */
+    left: 50%;
+    margin-left: -10.5px; /* -7.5 * 1.4 */
+    z-index: 10;
+    box-shadow: 0 0 10px rgba(255, 165, 0, 0.5), 0 0 20px rgba(255, 165, 0, 0.5), 0 0 60px rgba(255, 165, 0, 0.5), 0 0 80px rgba(255, 165, 0, 0.5);
+    transform-origin: 50% 90%;
+    animation: flicker 1s ease-in-out alternate infinite;
+}
+
+@keyframes flicker {
+    0% {
+        transform: skewX(5deg);
+        box-shadow: 0 0 10px rgba(255, 165, 0, 0.2), 0 0 20px rgba(255, 165, 0, 0.2), 0 0 60px rgba(255, 165, 0, 0.2), 0 0 80px rgba(255, 165, 0, 0.2);
+    }
+    25% {
+        transform: skewX(-5deg);
+        box-shadow: 0 0 10px rgba(255, 165, 0, 0.5), 0 0 20px rgba(255, 165, 0, 0.5), 0 0 60px rgba(255, 165, 0, 0.5), 0 0 80px rgba(255, 165, 0, 0.5);
+    }
+    50% {
+        transform: skewX(10deg);
+        box-shadow: 0 0 10px rgba(255, 165, 0, 0.3), 0 0 20px rgba(255, 165, 0, 0.3), 0 0 60px rgba(255, 165, 0, 0.3), 0 0 80px rgba(255, 165, 0, 0.3);
+    }
+    75% {
+        transform: skewX(-10deg);
+        box-shadow: 0 0 10px rgba(255, 165, 0, 0.4), 0 0 20px rgba(255, 165, 0, 0.4), 0 0 60px rgba(255, 165, 0, 0.4), 0 0 80px rgba(255, 165, 0, 0.4);
+    }
+    100% {
+        transform: skewX(5deg);
+        box-shadow: 0 0 10px rgba(255, 165, 0, 0.5), 0 0 20px rgba(255, 165, 0, 0.5), 0 0 60px rgba(255, 165, 0, 0.5), 0 0 80px rgba(255, 165, 0, 0.5);
+    }
+}
+
+/* Final message container inside cake-root */
+.cake-message {
+    position: absolute;
+    top: 130px; /* Position inside the cake */
+    left: 50%;
+    transform: translateX(-50%);
+    width: 80%;
+    color: #fff8f8;
+    text-align: center;
+    pointer-events: none;
+    text-shadow: 0 1px 4px rgba(0,0,0,0.6);
+    z-index: 11; /* Above icing */
+}
+
+.cake-message .quote { font-size: 20px; line-height: 1.5; color: #442b0c; font-weight: bold; }
 
 /* reduced motion fallback */
 @media (prefers-reduced-motion: reduce) {
-  .cake .layer, .confetti { transition: none !important; animation: none !important; }
+  .cake, .confetti, .flame { transition: none !important; animation: none !important; }
 }
 
 /* Planet clone styling used during solar->cake animation */
@@ -724,4 +872,114 @@ body {
   pointer-events: none;
   transform-origin: center center;
   transition: transform 650ms cubic-bezier(.22,1.2,.24,1), opacity 650ms ease;
+}
+
+/* Explosion / pop effect when clones are appended and animated
+   - short 'pop' to give an outward burst feel
+   - glow + mix-blend for nicer additive lighting
+   - pseudo-element ring pulse for a flash of light
+*/
+.planet-clone {
+  will-change: transform, opacity, filter;
+  animation: planetPop 520ms cubic-bezier(.22,1.2,.24,1) both;
+  mix-blend-mode: screen;
+  filter: drop-shadow(0 0 12px rgba(255,180,80,0.6));
+  position: fixed; /* clones are positioned fixed by JS; ensure pseudo works */
+}
+
+.planet-clone::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  pointer-events: none;
+  animation: ringPulse 700ms ease forwards;
+}
+
+@keyframes planetPop {
+  0% { transform: scale(1) translateZ(0); opacity: 1; filter: drop-shadow(0 0 0 rgba(255,200,100,0)); }
+  30% { transform: scale(1.25); filter: blur(1px) drop-shadow(0 0 18px rgba(255,170,80,0.95)); }
+  100% { transform: scale(1) translateZ(0); filter: drop-shadow(0 0 12px rgba(255,170,80,0.6)); }
+}
+
+@keyframes ringPulse {
+  0% { box-shadow: 0 0 0 rgba(255,200,100,0); opacity: 1; }
+  40% { box-shadow: 0 0 40px rgba(255,200,100,0.45); opacity: 0.9; }
+  100% { box-shadow: 0 0 120px rgba(255,200,100,0); opacity: 0; }
+}
+
+/* Make the sun clones brighter and more dramatic */
+.planet-clone.sun {
+  box-shadow: 0 0 60px 30px rgba(255,150,40,0.35), 0 0 120px 50px rgba(255,120,30,0.18);
+  border-radius: 50%;
+  transform-origin: center center;
+}
+
+/* Ensure cloned planet bodies keep a small glow while animating */
+.planet-clone .body {
+  box-shadow: 0 0 14px rgba(0,0,0,0.15), 0 0 20px rgba(255,160,90,0.12);
+  transform-origin: center center;
+}
+
+/* Small utility for optional spark elements (used by confetti / future particle spawns) */
+.explosion-spark {
+  position: fixed;
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: radial-gradient(circle at 40% 30%, #fff, #ffd36b 40%, #ff8b3d 70%);
+  pointer-events: none;
+  will-change: transform, opacity;
+  filter: drop-shadow(0 2px 6px rgba(255,160,80,0.6));
+}
+
+/* [NEW] Sun fragment styling for supernova */
+.sun-fragment {
+  position: fixed;
+  width: 10px; /* Base size, will scale */
+  height: 10px;
+  border-radius: 50%; /* Start as circles */
+  background: radial-gradient(circle at 50% 50%, #fff, #ffd36b 40%, #ff8b3d 70%);
+  box-shadow: 0 0 8px rgba(255,160,80,0.8), 0 0 20px rgba(255,100,0,0.5);
+  pointer-events: none;
+  will-change: transform, opacity;
+  z-index: 9999; /* Above planets, below flash */
+}
+
+/* === [NEW] Supernova Effects === */
+.supernova-flash {
+  position: fixed;
+  inset: 0;
+  background: #fff;
+  opacity: 0;
+  z-index: 10001; /* Above everything */
+  pointer-events: none;
+  animation: flash 800ms ease-out forwards;
+}
+
+@keyframes flash {
+  0% { opacity: 0; }
+  25% { opacity: 0.9; background: #fffde4; }
+  100% { opacity: 0; }
+}
+
+.supernova-shockwave {
+  position: fixed;
+  border: 2px solid rgba(255, 220, 180, 0.8);
+  border-radius: 50%;
+  z-index: 10000;
+  pointer-events: none;
+  animation: shockwave 900ms ease-out forwards;
+}
+
+@keyframes shockwave {
+  from { transform: scale(0); opacity: 1; }
+  to { transform: scale(3); opacity: 0; }
+}
+
+
+/* reduced motion respects user's choice */
+@media (prefers-reduced-motion: reduce) {
+  .planet-clone { animation: none !important; transition: none !important; }
+  .planet-clone::after { animation: none !important; }
 }

@@ -86,27 +86,26 @@ function showScene(index) {
     });
     return;
   } else if (scene.type === "final") {
-    sceneContainer.innerHTML = '';
-    sceneContainer.classList.add('final-screen');
-
-    const h1 = document.createElement('h1');
-    h1.textContent = "ฉันรักเธอ";
-    sceneContainer.appendChild(h1);
-
-    const p = document.createElement('p');
-    p.innerHTML = scene.quote.replace(/\n/g, '<br>');
-    sceneContainer.appendChild(p);
-
-    const btn = document.createElement('button');
-    btn.textContent = "เปิดของขวัญสุดท้าย ❤️";
-    btn.addEventListener('click', () => {
-      window.open('https://drive.google.com/file/d/YOUR_FINAL_VIDEO_ID/preview', '_blank');
-    });
-    sceneContainer.appendChild(btn);
-
-    playFinalAudio();
-    // celebration: confetti/heart fall
-    spawnConfetti(36);
+    // Auto-run final sequence: explode solar system into cake
+    // Hide overlay decorations (but keep #cosmos visible so clones can be created)
+    const hideBg = () => {
+      const ids = ['heartContainer', 'shooting'];
+      ids.forEach(id => {
+        const el = document.getElementById(id);
+        if (el) el.style.display = 'none';
+      });
+      const sparkle = document.querySelector('.sparkle-overlay');
+      if (sparkle) sparkle.style.display = 'none';
+      const containerEl = document.getElementById('container');
+      if (containerEl) containerEl.style.display = 'none';
+      const blackhole = document.getElementById('blackhole-container');
+      if (blackhole) {
+        blackhole.classList.remove('dimmed');
+      }
+    };
+    // Hide overlays now but keep cosmos until explodeSolarThenCake handles hiding it
+    hideBg();
+    explodeSolarThenCake(scene.quote);
     return;
   }
 
@@ -368,6 +367,68 @@ function animateTransform(el, transform, duration = 700, easing = 'cubic-bezier(
   });
 }
 
+// spawn small explosion sparks at (x,y) in viewport coordinates
+function spawnSparksAt(x, y, count = 8) {
+  const sparks = [];
+  for (let i = 0; i < count; i++) {
+    const s = document.createElement('div');
+    s.className = 'explosion-spark';
+    const size = 4 + Math.random() * 6;
+    s.style.width = `${size}px`;
+    s.style.height = `${size}px`;
+    s.style.left = `${x - size/2}px`;
+    s.style.top = `${y - size/2}px`;
+    const angle = Math.random() * Math.PI * 2;
+    const dist = 30 + Math.random() * 120;
+    const dx = Math.cos(angle) * dist;
+    const dy = Math.sin(angle) * dist;
+    s.style.opacity = '1';
+    document.body.appendChild(s);
+    sparks.push(s);
+
+    // animate via requestAnimationFrame for simple transform/opacity
+    requestAnimationFrame(() => {
+      s.style.transition = `transform ${600 + Math.random()*400}ms cubic-bezier(.22,1.2,.24,1), opacity ${600 + Math.random()*400}ms ease-out`;
+      s.style.transform = `translate(${dx}px, ${dy}px) scale(${0.6 + Math.random()*0.9}) rotate(${Math.random()*360}deg)`;
+      s.style.opacity = '0';
+    });
+
+    // cleanup
+    setTimeout(() => { s.remove(); }, 1400 + Math.random() * 600);
+  }
+}
+
+// [NEW] Spawn sun fragments for supernova effect
+function spawnSunFragments(x, y, count = 50) {
+  const fragmentPromises = [];
+  for (let i = 0; i < count; i++) {
+    const fragment = document.createElement('div');
+    fragment.className = 'sun-fragment';
+    document.body.appendChild(fragment);
+
+    const size = 8 + Math.random() * 12; // Vary fragment size
+    fragment.style.width = `${size}px`;
+    fragment.style.height = `${size}px`;
+    fragment.style.left = `${x - size / 2}px`;
+    fragment.style.top = `${y - size / 2}px`;
+
+    const angle = Math.random() * Math.PI * 2;
+    const dist = 100 + Math.random() * 300; // Fragments fly further
+    const dx = Math.cos(angle) * dist;
+    const dy = Math.sin(angle) * dist;    
+    const duration = 1800 + Math.random() * 1200; // [FIX] Slower animation
+    const rotation = Math.random() * 720 - 360; // Random rotation
+
+    fragment.style.transition = `transform ${duration}ms ease-out, opacity ${duration}ms ease-out`;
+    requestAnimationFrame(() => {
+      fragment.style.transform = `translate(${dx}px, ${dy}px) scale(${0.5 + Math.random() * 1.5}) rotate(${rotation}deg)`;
+      fragment.style.opacity = '0';
+    });
+    fragmentPromises.push(new Promise(resolve => setTimeout(() => { fragment.remove(); resolve(); }, duration + 100)));
+  }
+  return Promise.all(fragmentPromises);
+}
+
 // Map planets to cake layers and animate into place
 function transitionSolarToCake() {
   const cosmosRoot = document.getElementById('cosmos');
@@ -430,43 +491,164 @@ function transitionSolarToCake() {
   });
 }
 
-function buildAndShowCake(cakeRoot) {
+function buildAndShowCake(cakeRoot, candleCount = 3, message = null) {
+  if (!cakeRoot) return;
+  cakeRoot.style.display = 'block';
+  cakeRoot.style.opacity = '0';
   cakeRoot.innerHTML = '';
-  const cake = document.createElement('div');
+
+  // [NEW] Create cake with the new structure
+  const cake = document.createElement('div'); // This is the actual cake element
   cake.className = 'cake';
-
-  const bottom = document.createElement('div'); bottom.className = 'layer bottom';
-  const mid = document.createElement('div'); mid.className = 'layer mid';
-  const top = document.createElement('div'); top.className = 'layer';
-  const plate = document.createElement('div'); plate.className = 'plate';
-  const candlesWrap = document.createElement('div'); candlesWrap.className = 'candles';
-
-  // create 3 small candles
-  for (let i = 0; i < 3; i++) {
-    const c = document.createElement('div'); c.className = 'candle';
-    const f = document.createElement('div'); f.className = 'flame';
-    c.appendChild(f);
-    candlesWrap.appendChild(c);
-  }
-
-  cake.appendChild(bottom);
-  cake.appendChild(mid);
-  cake.appendChild(top);
-  cake.appendChild(candlesWrap);
-  cake.appendChild(plate);
+  cake.innerHTML = `
+    <div class="plate"></div>
+    <div class="layer layer-bottom"></div>
+    <div class="layer layer-middle"></div>
+    <div class="layer layer-top"></div>
+    <div class="icing"></div>
+    <div class="drip drip1"></div>
+    <div class="drip drip2"></div>
+    <div class="drip drip3"></div>
+    <div class="candle">
+        <div class="flame"></div>
+    </div>
+  `;
   cakeRoot.appendChild(cake);
 
-  // allow CSS transitions to animate layers into place
+  // responsive scaling for cake (smaller screens -> reduce scale)
+  const vw = Math.min(window.innerWidth, 900); // Use 900 as max width for scaling reference
+  const scale = Math.max(0.6, Math.min(1.5, vw / 600));
+  cakeRoot.style.setProperty('--cake-scale', scale.toString());
+
+  let msgEl = null;
+  if (message) {
+    msgEl = document.createElement('div');
+    msgEl.className = 'cake-message';
+    const p = document.createElement('p');
+    p.className = 'quote';
+    msgEl.appendChild(p);
+    cakeRoot.appendChild(msgEl);
+  }
+
   requestAnimationFrame(() => {
+    // cakeRoot.style.transition is now handled by the cake's own transition
+    cakeRoot.style.opacity = '1';
     cake.classList.add('assembled');
   });
 
-  // spawn confetti and type message after assembly (moderate count)
   setTimeout(() => {
     spawnConfetti(22);
-    // present a final message (we reuse showScene for typing in scene container)
-    showScene(scenes.length - 1);
+    if (message && msgEl) {
+      const p = msgEl.querySelector('.quote');
+      typeText(p, message, 75);
+    }
   }, 900);
+}
+
+// Explode solar (sun + orbiters) then assemble cake with 9 lit candles and message
+function explodeSolarThenCake(message) {
+  const candleCount = 1;
+  const cosmosRoot = document.getElementById('cosmos');
+  const cakeRoot = document.getElementById('cake-root');
+
+  if (!cosmosRoot || !cakeRoot) {
+    buildAndShowCake(cakeRoot || document.body, candleCount, message);
+    return;
+  }
+
+  const solar = cosmosRoot.querySelector('.solar');
+  if (!solar) {
+    buildAndShowCake(cakeRoot, candleCount, message);
+    return;
+  }
+
+  const sun = solar.querySelector('.sun');
+  const planets = Array.from(solar.querySelectorAll('.planet'));
+  // We will handle the sun separately with fragments, so remove it from the 'items' for planet destruction
+  const itemsToDestroy = planets; // Only planets will be cloned and destroyed this way
+
+  const centerX = window.innerWidth / 2;
+  const centerY = window.innerHeight / 2;
+
+  // --- SUPERNOVA SEQUENCE ---
+
+  // 1. Bright Flash
+  const flash = document.createElement('div');
+  flash.className = 'supernova-flash';
+  document.body.appendChild(flash);
+  setTimeout(() => flash.remove(), 1000);
+  
+  let sunExplosionPromise = Promise.resolve(); // Initialize with a resolved promise
+  // 2. Shockwave & Particle Burst from Sun's center
+  if (sun) {
+    const sunRect = sun.getBoundingClientRect();
+    const sunCenterX = sunRect.left + sunRect.width / 2;
+    const sunCenterY = sunRect.top + sunRect.height / 2;
+
+    const shockwave = document.createElement('div');
+    shockwave.className = 'supernova-shockwave';
+    shockwave.style.left = `${sunCenterX}px`;
+    shockwave.style.top = `${sunCenterY}px`;
+    document.body.appendChild(shockwave);
+    setTimeout(() => shockwave.remove(), 1000);
+
+    // Massive particle burst
+    spawnSparksAt(sunCenterX, sunCenterY, 150); // Smaller sparks
+
+    // NEW: Sun explodes into larger fragments
+    sunExplosionPromise = spawnSunFragments(sunCenterX, sunCenterY, 50); // 50 fragments
+  }
+
+  const planetDestructionPromises = itemsToDestroy.map(el => {
+    return new Promise(resolve => {
+      const rect = el.getBoundingClientRect();
+      const clone = el.cloneNode(true);
+      clone.classList.add('planet-clone');
+      if (el.classList.contains('sun')) clone.classList.add('sun');
+      clone.style.left = `${rect.left}px`;
+      clone.style.top = `${rect.top}px`;
+      document.body.appendChild(clone);
+
+      // Animate destruction
+      const angle = Math.random() * Math.PI * 2;
+      const dist = Math.min(window.innerWidth, window.innerHeight) * (0.8 + Math.random() * 0.7); // Fly even further
+      const dx = Math.cos(angle) * dist;
+      const dy = Math.sin(angle) * dist;
+      const duration = 1500 + Math.random() * 1000; // [FIX] Slower animation
+      const scaleFactor = 2 + Math.random() * 3; // Scale up more
+      const rotation = Math.random() * 1080 - 540; // More rotation
+
+      clone.style.transition = `transform ${duration}ms ease-in, opacity ${duration}ms ease-in`;
+      requestAnimationFrame(() => {
+        clone.style.transform = `translate(${dx}px, ${dy}px) scale(${2 + Math.random() * 2}) rotate(${Math.random() * 720 - 360}deg)`;
+        clone.style.opacity = '0';
+      });
+
+      setTimeout(() => {
+        clone.remove();
+        resolve();
+      }, duration);
+    });
+  });
+
+  const allDestructionPromises = [sunExplosionPromise, ...planetDestructionPromises];
+  cosmosRoot.style.transition = 'opacity 1200ms ease-out';
+  cosmosRoot.style.opacity = '0';
+  const blackhole = document.getElementById('blackhole-container');
+  if (blackhole) {
+    blackhole.style.transition = 'opacity 1200ms ease-out';
+    blackhole.style.opacity = '0';
+  }
+
+  Promise.all(allDestructionPromises).then(() => {
+    setTimeout(() => {
+      // Ensure cosmos and blackhole are fully hidden before cake appears
+      cosmosRoot.style.display = 'none';
+      if (blackhole) blackhole.style.display = 'none';
+
+      buildAndShowCake(cakeRoot, candleCount, message);
+    }, 500); // A brief moment of darkness before the cake appears
+  });
 }
 
 // Render cosmos background immediately
