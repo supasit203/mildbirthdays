@@ -1039,12 +1039,12 @@ body {
   }
   .final-image.left {
     left: 50%;
-    transform: translateX(-105%) scale(1);
+    transform: translateX(-105%) scale(1) !important;
   }
   .final-image.right {
     right: auto; /* [FIX] Override the desktop 'right' property */
     left: 50%; /* [FIX] Add left property for correct positioning */
-    transform: translateX(5%) scale(1);
+    transform: translateX(5%) scale(1) !important;
   }
 }
 
