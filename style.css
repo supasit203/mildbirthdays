@@ -1017,14 +1017,16 @@ body {
 
 .final-image.left {
   top: 40px;
-  left: 40px;
   transform-origin: top left;
+  left: 50%;
+  transform: translateX(calc(-50vw + 40px));
 }
 
 .final-image.right {
   top: 40px;
   transform-origin: top right;
-  right: 40px;
+  left: 50%;
+  transform: translateX(calc(50vw - 200px - 40px));
 }
 
 /* Responsive layout for mobile */
@@ -1039,12 +1041,12 @@ body {
   }
   .final-image.left {
     left: 50%;
-    transform: translateX(-105%); /* [FIX] Move further left to prevent overlap */
+    transform: translateX(-105%);
   }
   .final-image.right {
     right: auto; /* [FIX] Override the desktop 'right' property */
     left: 50%; /* [FIX] Add left property for correct positioning */
-    transform: translateX(5%); /* [FIX] Move further right to prevent overlap */
+    transform: translateX(5%);
   }
 }
 
