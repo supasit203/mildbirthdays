@@ -550,8 +550,8 @@ function buildFinalImages() {
   container.className = 'final-images-container';
 
   const imageUrls = [
-    'assets/images/my-photo-1.HEIC', // <-- เปลี่ยนเป็นรูปของคุณ
-    'assets/images/my-photo-2.JPG'  // <-- เปลี่ยนเป็นรูปของคุณ
+    'assets/images/my-photo-1.jpg', // <-- [แก้ไข] เปลี่ยนไฟล์ .HEIC เป็น .jpg หรือ .png
+    'assets/images/my-photo-2.jpg'  // <-- [แก้ไข] แนะนำให้ใช้ .jpg (ตัวพิมพ์เล็ก)
   ];
 
   imageUrls.forEach((url, index) => {
