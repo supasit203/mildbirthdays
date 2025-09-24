@@ -350,6 +350,109 @@ function spawnConfetti(count = 24) {
   setTimeout(() => container.remove(), 8000);
 }
 
+// Helper to animate a DOM element with transform and return a Promise when transition ends
+function animateTransform(el, transform, duration = 700, easing = 'cubic-bezier(.22,1.2,.24,1)') {
+  return new Promise(resolve => {
+    el.style.transition = `transform ${duration}ms ${easing}, opacity ${duration}ms ${easing}`;
+    requestAnimationFrame(() => {
+      el.style.transform = transform;
+    });
+    const cleanup = () => {
+      el.removeEventListener('transitionend', onEnd);
+      resolve();
+    };
+    const onEnd = (e) => { if (e.propertyName.includes('transform')) cleanup(); };
+    el.addEventListener('transitionend', onEnd);
+    // safety fallback
+    setTimeout(cleanup, duration + 100);
+  });
+}
+
+// Map planets to cake layers and animate into place
+function transitionSolarToCake() {
+  const cosmosRoot = document.getElementById('cosmos');
+  const cakeRoot = document.getElementById('cake-root');
+  if (!cosmosRoot || !cakeRoot) return;
+
+  // find all orbit planets currently in DOM
+  const planets = Array.from(cosmosRoot.querySelectorAll('.solar .planet'));
+  if (!planets.length) {
+    // fallback: just show cake
+    buildAndShowCake(cakeRoot);
+    return;
+  }
+
+  // show cake root (hidden by default)
+  cakeRoot.style.display = 'block';
+
+  // animate planets to center with slight random offsets
+  const centerX = window.innerWidth / 2;
+  const centerY = window.innerHeight / 2;
+
+  const animPromises = planets.map((p, i) => {
+    // convert planet position to viewport coordinates
+    const rect = p.getBoundingClientRect();
+    const px = rect.left + rect.width / 2;
+    const py = rect.top + rect.height / 2;
+    const dx = centerX - px + (Math.random() * 40 - 20);
+    const dy = centerY - py + (Math.random() * 60 - 30);
+    p.style.pointerEvents = 'none';
+    p.style.position = 'fixed';
+    p.style.left = `${px - rect.width/2}px`;
+    p.style.top = `${py - rect.height/2}px`;
+    p.style.margin = '0';
+    p.style.transform = 'translate(0,0)';
+
+    // animate using transform translate
+    return animateTransform(p, `translate(${dx}px, ${dy}px) scale(0.4)`, 650);
+  });
+
+  Promise.all(animPromises).then(() => {
+    // after planets converge, remove them and show cake assemble
+    planets.forEach(p => p.remove());
+    buildAndShowCake(cakeRoot);
+  });
+}
+
+function buildAndShowCake(cakeRoot) {
+  cakeRoot.innerHTML = '';
+  const cake = document.createElement('div');
+  cake.className = 'cake';
+
+  const bottom = document.createElement('div'); bottom.className = 'layer bottom';
+  const mid = document.createElement('div'); mid.className = 'layer mid';
+  const top = document.createElement('div'); top.className = 'layer';
+  const plate = document.createElement('div'); plate.className = 'plate';
+  const candlesWrap = document.createElement('div'); candlesWrap.className = 'candles';
+
+  // create 3 small candles
+  for (let i = 0; i < 3; i++) {
+    const c = document.createElement('div'); c.className = 'candle';
+    const f = document.createElement('div'); f.className = 'flame';
+    c.appendChild(f);
+    candlesWrap.appendChild(c);
+  }
+
+  cake.appendChild(bottom);
+  cake.appendChild(mid);
+  cake.appendChild(top);
+  cake.appendChild(candlesWrap);
+  cake.appendChild(plate);
+  cakeRoot.appendChild(cake);
+
+  // allow CSS transitions to animate layers into place
+  requestAnimationFrame(() => {
+    cake.classList.add('assembled');
+  });
+
+  // spawn confetti and type message after assembly
+  setTimeout(() => {
+    spawnConfetti(40);
+    // present a final message (we reuse showScene for typing in scene container)
+    showScene(scenes.length - 1);
+  }, 900);
+}
+
 // Render cosmos background immediately
 renderCosmos();
 

@@ -669,3 +669,52 @@ body {
   0% { transform: translateY(-10vh) rotate(0deg) translateX(0); opacity: 1; }
   100% { transform: translateY(110vh) rotate(720deg) translateX(60px); opacity: 0; }
 }
+
+/* Cake scaffolding */
+#cake-root {
+  position: fixed;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -40%) scale(var(--cake-scale, 1));
+  z-index: 1000;
+  pointer-events: none;
+  display: none; /* shown when transforming */
+}
+.cake {
+  width: 320px;
+  max-width: 86vw;
+  margin: 0 auto;
+  pointer-events: none;
+  transform-origin: center bottom;
+}
+.cake .layer {
+  width: 100%;
+  height: 64px;
+  border-radius: 14px;
+  background: linear-gradient(180deg, #fff6e6, #ffd3a6);
+  box-shadow: 0 8px 18px rgba(0,0,0,0.18);
+  margin-bottom: 10px;
+  transform: translateY(-40vh) scale(0.6);
+  transition: transform 700ms cubic-bezier(.22,1.2,.24,1);
+}
+.cake .layer.mid { background: linear-gradient(180deg, #fff4f8, #ffcfe0); height: 72px; }
+.cake .layer.bottom { background: linear-gradient(180deg, #fffbe6, #ffd78b); height: 90px; }
+.cake.assembled .layer { transform: translateY(0) scale(1); }
+.cake .plate {
+  height: 12px;
+  background: radial-gradient(ellipse at center, #f3f3f3, #d6d6d6);
+  border-radius: 50%;
+  margin-top: -6px;
+  transform: scaleX(0.8) translateY(10px);
+}
+.cake .candles { display: flex; justify-content: center; gap: 12px; margin-top: -36px; }
+.cake .candle {
+  width: 8px; height: 30px; background: #ffffff; border-radius: 4px; box-shadow: 0 2px 4px rgba(0,0,0,0.12);
+}
+.candle .flame { width: 12px; height: 12px; background: radial-gradient(circle at 40% 30%, #fff, #ffd36b 40%, #ff8b3d 70%); border-radius: 50%; margin: -10px auto 0; transform-origin: center; animation: flameBounce 800ms ease-in-out infinite; }
+@keyframes flameBounce { 0% { transform: scale(0.9) translateY(0);} 50% { transform: scale(1.05) translateY(-4px);} 100% { transform: scale(0.9) translateY(0);} }
+
+/* reduced motion fallback */
+@media (prefers-reduced-motion: reduce) {
+  .cake .layer, .confetti { transition: none !important; animation: none !important; }
+}
