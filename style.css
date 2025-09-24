@@ -1023,8 +1023,8 @@ body {
 
 .final-image.right {
   top: 40px;
-  right: 40px; /* [FIX] Revert to using 'right' for simpler desktop positioning */
   transform-origin: top right;
+  right: 40px;
 }
 
 /* Responsive layout for mobile */

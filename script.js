@@ -551,7 +551,7 @@ function buildFinalImages() {
 
   const imageUrls = [
     'assets/images/my-photo-1.jpg', // <-- [แก้ไข] เปลี่ยนไฟล์ .HEIC เป็น .jpg หรือ .png
-    'assets/images/my-photo-2.jpg'  // <-- [แก้ไข] แนะนำให้ใช้ .jpg (ตัวพิมพ์เล็ก)
+    'assets/images/my-photo-3.jpg'  // <-- [แก้ไข] แนะนำให้ใช้ .jpg (ตัวพิมพ์เล็ก)
   ];
 
   imageUrls.forEach((url, index) => {
