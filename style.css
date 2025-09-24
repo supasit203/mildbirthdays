@@ -865,6 +865,7 @@ body {
     color: #010914;
     font-weight: bold;
     -webkit-text-stroke: 0.5px #293b55; /* [FIX] Updated stroke color to dark blue */
+    overflow-wrap: break-word; /* [FIX] Better word wrapping for long text */
     word-break: break-word; /* [FIX] Ensure long words wrap correctly */
 }
 
@@ -1034,8 +1035,8 @@ body {
   }
   .final-image {
     top: 8vh; /* Position above the cake */
-    width: 100px;
-    height: 133px;
+    width: 120px; /* [FIX] Made images slightly larger on mobile */
+    height: 160px;
   }
   .final-image.left {
     left: 50%;
