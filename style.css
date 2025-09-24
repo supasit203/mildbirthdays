@@ -1028,18 +1028,23 @@ body {
 
 /* Responsive layout for mobile */
 @media (max-width: 768px) {
+  /* Make cake slightly larger on mobile */
+  #cake-root {
+    --cake-scale: 1.15;
+  }
+  .cake-message .quote {
+    font-size: 20px; /* Increase font size on mobile */
+  }
   .final-image {
     top: 8vh; /* Position above the cake */
     width: 100px;
     height: 133px;
   }
   .final-image.left {
-    left: 50%;
-    transform: translateX(-110%); /* Position to the left of center */
+    transform: translateX(-105%); /* [FIX] Move further left to prevent overlap */
   }
   .final-image.right {
-    left: 50%;
-    transform: translateX(10%); /* Position to the right of center */
+    transform: translateX(5%); /* [FIX] Move further right to prevent overlap */
   }
 }
 
