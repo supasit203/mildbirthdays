@@ -385,31 +385,47 @@ function transitionSolarToCake() {
   // show cake root (hidden by default)
   cakeRoot.style.display = 'block';
 
-  // animate planets to center with slight random offsets
+  // animate clones of planets to center with slight random offsets (do not remove originals)
   const centerX = window.innerWidth / 2;
   const centerY = window.innerHeight / 2;
 
+  const clones = [];
   const animPromises = planets.map((p, i) => {
-    // convert planet position to viewport coordinates
     const rect = p.getBoundingClientRect();
+    // create a visual clone to animate so we don't break the original layout
+    const clone = p.cloneNode(true);
+    clone.classList.add('planet-clone');
+    // size/position clone exactly over the original
+    clone.style.position = 'fixed';
+    clone.style.left = `${rect.left}px`;
+    clone.style.top = `${rect.top}px`;
+    clone.style.width = `${rect.width}px`;
+    clone.style.height = `${rect.height}px`;
+    clone.style.margin = '0';
+    clone.style.zIndex = 9999;
+    clone.style.pointerEvents = 'none';
+    // reset transforms on clone
+    clone.style.transform = 'translate(0,0)';
+    document.body.appendChild(clone);
+    clones.push(clone);
+
     const px = rect.left + rect.width / 2;
     const py = rect.top + rect.height / 2;
     const dx = centerX - px + (Math.random() * 40 - 20);
     const dy = centerY - py + (Math.random() * 60 - 30);
-    p.style.pointerEvents = 'none';
-    p.style.position = 'fixed';
-    p.style.left = `${px - rect.width/2}px`;
-    p.style.top = `${py - rect.height/2}px`;
-    p.style.margin = '0';
-    p.style.transform = 'translate(0,0)';
 
-    // animate using transform translate
-    return animateTransform(p, `translate(${dx}px, ${dy}px) scale(0.4)`, 650);
+    return animateTransform(clone, `translate(${dx}px, ${dy}px) scale(0.4)`, 650);
   });
 
   Promise.all(animPromises).then(() => {
-    // after planets converge, remove them and show cake assemble
-    planets.forEach(p => p.remove());
+    // after clones converge, remove clones and gracefully hide the cosmos
+    clones.forEach(c => c.remove());
+    const cosmos = document.getElementById('cosmos');
+    if (cosmos) {
+      cosmos.style.transition = 'opacity 600ms ease';
+      cosmos.style.opacity = '0';
+      setTimeout(() => { cosmos.style.display = 'none'; }, 700);
+    }
     buildAndShowCake(cakeRoot);
   });
 }
@@ -445,9 +461,9 @@ function buildAndShowCake(cakeRoot) {
     cake.classList.add('assembled');
   });
 
-  // spawn confetti and type message after assembly
+  // spawn confetti and type message after assembly (moderate count)
   setTimeout(() => {
-    spawnConfetti(40);
+    spawnConfetti(22);
     // present a final message (we reuse showScene for typing in scene container)
     showScene(scenes.length - 1);
   }, 900);

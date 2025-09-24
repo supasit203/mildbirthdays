@@ -718,3 +718,10 @@ body {
 @media (prefers-reduced-motion: reduce) {
   .cake .layer, .confetti { transition: none !important; animation: none !important; }
 }
+
+/* Planet clone styling used during solar->cake animation */
+.planet-clone {
+  pointer-events: none;
+  transform-origin: center center;
+  transition: transform 650ms cubic-bezier(.22,1.2,.24,1), opacity 650ms ease;
+}
