@@ -849,18 +849,23 @@ body {
 /* Final message container inside cake-root */
 .cake-message {
     position: absolute;
-    top: 130px; /* Position inside the cake */
+    top: 85px; /* [FIX] Moved down for better placement */
     left: 50%;
     transform: translateX(-50%);
-    width: 80%;
-    color: #fff8f8;
+    width: 70%; /* Adjusted width for new position */
     text-align: center;
     pointer-events: none;
-    text-shadow: 0 1px 4px rgba(0,0,0,0.6);
+    text-shadow: 1px 1px 2px rgba(0,0,0,0.2); /* [FIX] Softer shadow for readability */
     z-index: 11; /* Above icing */
 }
 
-.cake-message .quote { font-size: 20px; line-height: 1.5; color: #442b0c; font-weight: bold; }
+.cake-message .quote {
+    font-size: 18px;
+    line-height: 1.6;
+    color: #442b0c;
+    font-weight: bold;
+    -webkit-text-stroke: 0.5px #3a2509; /* [FIX] Add a thin stroke for readability */
+}
 
 /* reduced motion fallback */
 @media (prefers-reduced-motion: reduce) {

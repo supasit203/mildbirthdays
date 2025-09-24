@@ -45,7 +45,7 @@ const scenes = [
   },
   {
     type: "final",
-    quote: "ฉันไม่เคยคิดว่าตัวเองจะรักใครขนาดนี้...\n\nจนมาเจอเธอ\n\nวันนี้... ฉันขอเธอเป็นคนเดียวของฉัน\ntill the end of my breath."
+    quote: "สุขสันต์วันครบรอบ 32 ปีนะที่รัก\nขอให้มีสุขภาพร่างกายที่แข็งแรง\nมีความสุข เรียนจบหมอไวๆ\nสอบผ่านทุกวิชา ได้คะแนนดีๆ\nถูกรางวัลที่ 1 เป็นที่รักของเค้าตลอดไปนะครับ."
   }
 ];
 
@@ -527,7 +527,7 @@ function buildAndShowCake(cakeRoot, candleCount = 3, message = null) {
     const p = document.createElement('p');
     p.className = 'quote';
     msgEl.appendChild(p);
-    cakeRoot.appendChild(msgEl);
+    cake.appendChild(msgEl); // [FIX] Move message inside the .cake element
   }
 
   requestAnimationFrame(() => {
@@ -565,12 +565,17 @@ function explodeSolarThenCake(message) {
   const sun = solar.querySelector('.sun');
   const planets = Array.from(solar.querySelectorAll('.planet'));
   // We will handle the sun separately with fragments, so remove it from the 'items' for planet destruction
-  const itemsToDestroy = planets; // Only planets will be cloned and destroyed this way
+  const itemsToDestroy = planets;
 
   const centerX = window.innerWidth / 2;
   const centerY = window.innerHeight / 2;
 
   // --- SUPERNOVA SEQUENCE ---
+
+  // [FIX] Detect mobile to reduce particle count for performance
+  const isMobile = window.innerWidth < 768;
+  const sparkCount = isMobile ? 50 : 150;
+  const fragmentCount = isMobile ? 20 : 50;
 
   // 1. Bright Flash
   const flash = document.createElement('div');
@@ -593,10 +598,10 @@ function explodeSolarThenCake(message) {
     setTimeout(() => shockwave.remove(), 1000);
 
     // Massive particle burst
-    spawnSparksAt(sunCenterX, sunCenterY, 150); // Smaller sparks
+    spawnSparksAt(sunCenterX, sunCenterY, sparkCount);
 
     // NEW: Sun explodes into larger fragments
-    sunExplosionPromise = spawnSunFragments(sunCenterX, sunCenterY, 50); // 50 fragments
+    sunExplosionPromise = spawnSunFragments(sunCenterX, sunCenterY, fragmentCount);
   }
 
   const planetDestructionPromises = itemsToDestroy.map(el => {
