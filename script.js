@@ -545,6 +545,30 @@ function buildAndShowCake(cakeRoot, candleCount = 3, message = null) {
   }, 900);
 }
 
+function buildFinalImages() {
+  const container = document.createElement('div');
+  container.className = 'final-images-container';
+
+  const imageUrls = [
+    'assets/images/my-photo-1.HEIC', // <-- เปลี่ยนเป็นรูปของคุณ
+    'assets/images/my-photo-2.JPG'  // <-- เปลี่ยนเป็นรูปของคุณ
+  ];
+
+  imageUrls.forEach((url, index) => {
+    const img = document.createElement('img');
+    img.src = url;
+    img.className = `final-image ${index === 0 ? 'left' : 'right'}`;
+    container.appendChild(img);
+  });
+
+  document.body.appendChild(container);
+
+  // Animate them in
+  setTimeout(() => {
+    container.classList.add('visible');
+  }, 1200); // Delay to sync with cake appearance
+}
+
 // Explode solar (sun + orbiters) then assemble cake with 9 lit candles and message
 function explodeSolarThenCake(message) {
   const candleCount = 1;
@@ -652,6 +676,7 @@ function explodeSolarThenCake(message) {
       if (blackhole) blackhole.style.display = 'none';
 
       buildAndShowCake(cakeRoot, candleCount, message);
+      buildFinalImages(); // [NEW] Call function to build and show final images
     }, 500); // A brief moment of darkness before the cake appears
   });
 }
