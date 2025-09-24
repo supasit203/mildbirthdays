@@ -516,8 +516,8 @@ function buildAndShowCake(cakeRoot, candleCount = 3, message = null) {
   cakeRoot.appendChild(cake);
 
   // responsive scaling for cake (smaller screens -> reduce scale)
-  const vw = Math.min(window.innerWidth, 900); // Use 900 as max width for scaling reference
-  const scale = Math.max(0.6, Math.min(1.5, vw / 600));
+  const vw = Math.min(window.innerWidth, 900);
+  const scale = Math.max(0.6, Math.min(1.5, vw / 550)); // [FIX] Adjusted divisor for better mobile scaling
   cakeRoot.style.setProperty('--cake-scale', scale.toString());
 
   let msgEl = null;
