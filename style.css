@@ -852,7 +852,7 @@ body {
     top: 75px; /* [FIX] Moved up slightly */
     left: 50%;
     transform: translateX(-50%);
-    width: 70%; /* Adjusted width for new position */
+    width: 80%; /* Adjusted width for new position */
     text-align: center;
     pointer-events: none;
     z-index: 11; /* Above icing */
